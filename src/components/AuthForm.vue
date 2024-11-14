@@ -14,7 +14,7 @@
             {{ subtitle }}
           </v-card-subtitle>
 
-          <v-form @submit.prevent="onSubmit">
+          <v-form>
             <v-text-field
               v-model="email"
               prepend-icon="mdi-email"
@@ -65,7 +65,7 @@
 
             <div class="text-center mt-4">
               <span class="mr-5">{{ actionText }}</span>
-              <v-btn text color="primary" @click="switchAction">
+              <v-btn color="primary" @click="switchAction">
                 {{ actionLinkText }}
               </v-btn>
             </div>
