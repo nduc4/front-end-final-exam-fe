@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-app-bar app>
-      <v-toolbar-title>Thư viện LGttBT</v-toolbar-title>
+      <v-toolbar-title>Thư viện Lạc Hồng</v-toolbar-title>
       <v-spacer></v-spacer>
       <UserCard v-if="showUserCard" />
     </v-app-bar>
@@ -39,7 +39,7 @@
       <!-- Main content bên phải -->
       <v-main class="fill-height" style="min-height: 100vh">
         <v-row>
-          <v-col cols="12" sm="6" md="12">
+          <v-col cols="12" md="12">
             <!-- Slot cho input fields, sử dụng v-if để ẩn hiện -->
             <slot name="input-fields" v-if="showInputFields"></slot>
           </v-col>

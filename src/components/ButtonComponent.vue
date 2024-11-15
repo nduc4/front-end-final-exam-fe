@@ -1,5 +1,5 @@
 <template>
-  <v-btn style="border-radius: 4px" color="green" dark @click="handleClick">
+  <v-btn :style="{ color, background }" dark @click="handleClick">
     {{ text }}
   </v-btn>
 </template>
@@ -10,7 +10,12 @@ export default {
   props: {
     text: {
       type: String,
-      required: true,
+    },
+    background: {
+      type: String,
+    },
+    color: {
+      type: String,
     },
   },
   methods: {
@@ -20,3 +25,10 @@ export default {
   },
 };
 </script>
+<style scoped>
+button {
+  border-radius: 4px;
+  color: green;
+  background: rgb(36, 199, 36);
+}
+</style>

@@ -19,26 +19,26 @@
           <v-form @submit.prevent="handleSubmit" ref="form">
             <!-- Tên sách và Tác giả trên một hàng riêng -->
             <v-row>
-              <v-col cols="6" class="pt-1 pb-1">
+              <v-col cols="12" md="6" class="pt-1 pb-1">
                 <InputField
                   :label="inputLabels[0]"
                   v-model="formData.bookTitle"
                 />
               </v-col>
-              <v-col cols="6" class="pt-1 pb-1">
+              <v-col cols="12" md="6" class="pt-1 pb-1">
                 <InputField :label="inputLabels[1]" v-model="formData.author" />
               </v-col>
             </v-row>
 
             <!-- Tác giả và Nhà xuất bản trên cùng một hàng -->
             <v-row>
-              <v-col cols="6" class="pt-1 pb-1">
+              <v-col cols="12" md="6" class="pt-1 pb-1">
                 <InputField
                   :label="inputLabels[2]"
                   v-model="formData.publisher"
                 />
               </v-col>
-              <v-col cols="6" class="pt-1 pb-1">
+              <v-col cols="12" md="6" class="pt-1 pb-1">
                 <PublicationYearComponent />
               </v-col>
             </v-row>
@@ -47,8 +47,16 @@
 
             <!-- Nút submit -->
             <v-row>
-              <v-col class="text-right">
-                <Button text="Xác nhận" />
+              <v-col
+                :class="{
+                  'text-right':
+                    display.md || display.lg || display.xl || display.xxl,
+                  'text-center':
+                    !display.md && !display.lg && !display.xl && !display.xxl,
+                }"
+                class="mt-8 mt-sm-0"
+              >
+                <Button background="green" color="white" text="Xác nhận" />
               </v-col>
             </v-row>
           </v-form>
@@ -66,7 +74,10 @@ import InputField from "@/components/InputComponent.vue";
 import ImageChanger from "@/components/AddImageComponent.vue";
 import Button from "@/components/ButtonComponent.vue";
 import PublicationYearComponent from "@/components/PublicationYearComponent.vue";
+import { useDisplay } from "vuetify";
 
+// Sử dụng hook useDisplay để lấy thông tin về các breakpoint
+const display = useDisplay();
 const router = useRouter();
 
 const goToAddBook = () => {
