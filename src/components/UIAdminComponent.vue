@@ -37,7 +37,11 @@
       </v-navigation-drawer>
 
       <!-- Main content bên phải -->
-      <v-main class="fill-height" style="min-height: 100vh">
+      <v-main
+        sytle="background-color: red"
+        class="fill-height"
+        style="min-height: 100vh"
+      >
         <v-row>
           <v-col cols="12" md="12">
             <!-- Slot cho input fields, sử dụng v-if để ẩn hiện -->
@@ -97,3 +101,9 @@ export default {
   },
 };
 </script>
+
+<style>
+.v-main {
+  background-color: #edf7ff;
+}
+</style>
