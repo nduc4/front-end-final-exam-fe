@@ -17,7 +17,6 @@
           <h1 class="mb-4 text-center">QUẢN LÝ SÁCH</h1>
           <!-- Bọc tất cả các trường nhập liệu trong v-form -->
           <v-form @submit.prevent="handleSubmit" ref="form">
-            <!-- Tên sách và Tác giả trên một hàng riêng -->
             <v-row>
               <v-col cols="12" class="pt-1 pb-1">
                 <InputField
@@ -27,7 +26,6 @@
               </v-col>
             </v-row>
 
-            <!-- Tác giả và Nhà xuất bản trên cùng một hàng -->
             <v-row>
               <v-col cols="12" md="6" class="pt-1 pb-1">
                 <InputField
@@ -39,7 +37,6 @@
                 <PublicationYearComponent />
               </v-col>
             </v-row>
-            <!-- Đổi hình ảnh -->
 
             <InforBook :showButton="false" class="mt-4" />
             <!-- Nút submit -->
@@ -60,10 +57,15 @@
                   text="Xóa"
                 />
                 <Button
+                  @click="showAlert"
                   class="ml-2"
                   background="green"
                   color="white"
                   text="Sửa"
+                />
+                <AlertComponent
+                  v-show="alertVisible"
+                  text="This is a success message!"
                 />
               </v-col>
             </v-row>
@@ -82,6 +84,7 @@ import InputField from "@/components/InputComponent.vue";
 import InforBook from "@/components/InformationBook1.vue";
 import Button from "@/components/ButtonComponent.vue";
 import PublicationYearComponent from "@/components/PublicationYearComponent.vue";
+import AlertComponent from "@/components/AlertComponent.vue";
 import { useDisplay } from "vuetify";
 
 // Sử dụng hook useDisplay để lấy thông tin về các breakpoint
@@ -128,5 +131,15 @@ const formData = ref({
 const handleSubmit = () => {
   console.log("Form submitted:", formData.value);
   // Thực hiện xử lý dữ liệu hoặc gọi API ở đây
+};
+
+const alertVisible = ref(false);
+
+const showAlert = () => {
+  alertVisible.value = true;
+  // Tự động tắt sau 3 giây (nếu cần)
+  setTimeout(() => {
+    alertVisible.value = false;
+  }, 1500);
 };
 </script>
