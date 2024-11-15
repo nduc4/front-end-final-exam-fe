@@ -23,6 +23,7 @@ declare module 'vue-router/auto-routes' {
     '/AuthFormComponent': RouteRecordInfo<'/AuthFormComponent', '/AuthFormComponent', Record<never, never>, Record<never, never>>,
     '/EditBookPage': RouteRecordInfo<'/EditBookPage', '/EditBookPage', Record<never, never>, Record<never, never>>,
     '/LoginPage': RouteRecordInfo<'/LoginPage', '/LoginPage', Record<never, never>, Record<never, never>>,
+    '/ManageBookPage': RouteRecordInfo<'/ManageBookPage', '/ManageBookPage', Record<never, never>, Record<never, never>>,
     '/RegisterPage': RouteRecordInfo<'/RegisterPage', '/RegisterPage', Record<never, never>, Record<never, never>>,
   }
 }
