@@ -42,21 +42,15 @@
               v-model="password"
               prepend-icon="mdi-lock"
               label="Mật Khẩu"
-              type="password"
+              :type="showPassword ? 'text' : 'password'"
               color="primary"
               required
               outlined
               hide-details
-              :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+              :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
               @click:append="togglePasswordVisibility"
               class="mb-4"
             ></v-text-field>
-
-            <!-- <v-row>
-              <v-col class="text-right">
-                <a href="#">Quên mật khẩu?</a>
-              </v-col>
-            </v-row> -->
 
             <div style="margin-bottom: 24px"></div>
             <v-btn type="submit" color="orange" class="mt-4" block>
