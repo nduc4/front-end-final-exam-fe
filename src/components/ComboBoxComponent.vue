@@ -30,7 +30,7 @@ const updateValue = (value: string) => {
 };
 
 const rules = {
-  required: (value: string) => !!value || "Field is required",
+  required: (value: string) => !!value || "ĐIỀN VÀO KHÔNG BỐ MÀY ĐẤM CHẾT GIỜ",
 };
 
 const route = useRoute();

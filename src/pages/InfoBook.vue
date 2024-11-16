@@ -13,45 +13,12 @@
           max-width="100%"
           color="grey-lighten-4"
         >
-          <h1 class="mb-4 text-center">CHỈNH SỬA</h1>
+          <h1 class="mb-4 text-center">THÔNG TIN</h1>
           <v-form @submit.prevent="handleSubmit" ref="form">
-            <!-- Tên sách và Tác giả -->
-            <v-row>
-              <v-col cols="12" md="6" class="pt-1 pb-1">
-                <InputField
-                  :label="inputLabels[0]"
-                  v-model="formData.bookTitle"
-                />
-              </v-col>
-              <v-col cols="12" md="6" class="pt-1 pb-1">
-                <InputField :label="inputLabels[1]" v-model="formData.author" />
-              </v-col>
-            </v-row>
-
-            <!-- Thể loại, Phân loại và Năm xuất bản -->
-            <v-row>
-              <v-col cols="12" md="4" class="pt-1 pb-1">
-                <ComboBox
-                  :label="inputLabels[2]"
-                  v-model="formData.category"
-                  :items="categoryOptions"
-                />
-              </v-col>
-              <v-col cols="12" md="4" class="pt-1 pb-1">
-                <ComboBox
-                  :label="inputLabels[3]"
-                  v-model="formData.classify"
-                  :items="classifyOptions"
-                />
-              </v-col>
-              <v-col cols="12" md="4" class="pt-1 pb-1">
-                <PublicationYear />
-              </v-col>
-            </v-row>
-
             <!-- Đổi hình ảnh -->
-            <ImageChanger :showImageChanger="true" class="nt-4 pt-0 pb-0" />
-
+            <InformationBook1 class="mt-6 flex justify-center" style="width: 100%; height: auto;">
+            </InformationBook1>
+            <!-- Nút submit -->
             <!-- Nút submit -->
             <v-row>
               <v-col
@@ -61,7 +28,7 @@
                 }"
                 class="mt-8 mt-sm-0"
               >
-                <Button background="green" color="white" text="Xác nhận" />
+
               </v-col>
             </v-row>
           </v-form>
@@ -76,12 +43,11 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import AdminComponent from "@/components/UIAdminComponent.vue";
 import InputField from "@/components/InputComponent.vue";
-import PublicationYear from "@/components/PublicationYearComponent.vue";
-import ImageChanger from "@/components/AddImageComponent.vue";
-import Button from "@/components/ButtonComponent.vue";
 import ComboBox from "@/components/ComboBoxComponent.vue";
 import { useDisplay } from "vuetify";
-
+import InformationBook1 from "@/components/InformationBook1.vue";
+import InformationBook3 from "@/components/InformationBook3.vue";
+import InformationBook2 from "@/components/InformationBook2.vue";
 // Sử dụng hook useDisplay để lấy thông tin về các breakpoint
 const display = useDisplay();
 // Khai báo router
@@ -97,11 +63,10 @@ const formData = ref({
 });
 
 // Dữ liệu cho các dropdown
-const categoryOptions = ["Category 1", "Category 2", "Category 3"];
-const classifyOptions = ["Classify 1", "Classify 2", "Classify 3"];
+const categoryOptions = ["NTR", "DRAMA", "FANTASY","LIGHT NOVEL", "TÀI LIỆU"];
 
 // Các label cho input
-const inputLabels = ["Tên sách", "Tác giả", "Thể loại", "Phân loại"];
+const inputLabels = ["Tên sách", "Tác giả", "Thể loại"];
 const repeatCount = inputLabels.length;
 
 // Các phương thức chuyển trang
@@ -118,6 +83,12 @@ const goToSearchBook = () => {
 // Các items cho AdminComponent
 const itemsA = [
   {
+    title: "Tìm kiếm",
+    icon: "mdi-magnify",
+    value: "search",
+    method: goToSearchBook,
+  },
+  {
     title: "Thêm sách",
     icon: "mdi-plus",
     value: "add",
@@ -128,12 +99,6 @@ const itemsA = [
     icon: "mdi-pencil",
     value: "edit",
     method: goToEditBook,
-  },
-  {
-    title: "Tìm kiếm",
-    icon: "mdi-magnify",
-    value: "search",
-    method: goToSearchBook,
   },
 ];
 

@@ -13,7 +13,7 @@
           max-width="100%"
           color="grey-lighten-4"
         >
-          <h1 class="mb-4 text-center">CHỈNH SỬA</h1>
+          <h1 class="mb-4 text-center">TÌM KIẾM</h1>
           <v-form @submit.prevent="handleSubmit" ref="form">
             <!-- Tên sách và Tác giả -->
             <v-row>
@@ -37,33 +37,13 @@
                   :items="categoryOptions"
                 />
               </v-col>
-              <v-col cols="12" md="4" class="pt-1 pb-1">
-                <ComboBox
-                  :label="inputLabels[3]"
-                  v-model="formData.classify"
-                  :items="classifyOptions"
-                />
-              </v-col>
-              <v-col cols="12" md="4" class="pt-1 pb-1">
-                <PublicationYear />
-              </v-col>
             </v-row>
 
             <!-- Đổi hình ảnh -->
-            <ImageChanger :showImageChanger="true" class="nt-4 pt-0 pb-0" />
+            <!-- <ImageChanger :showImageChanger="true" class="nt-4 pt-0 pb-0" /> -->
 
-            <!-- Nút submit -->
-            <v-row>
-              <v-col
-                :class="{
-                  'text-center': display.xs,
-                  'text-right': !display.xs,
-                }"
-                class="mt-8 mt-sm-0"
-              >
-                <Button background="green" color="white" text="Xác nhận" />
-              </v-col>
-            </v-row>
+            <InformationBook2>
+            </InformationBook2>
           </v-form>
         </v-card>
       </v-responsive>
@@ -76,12 +56,9 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import AdminComponent from "@/components/UIAdminComponent.vue";
 import InputField from "@/components/InputComponent.vue";
-import PublicationYear from "@/components/PublicationYearComponent.vue";
-import ImageChanger from "@/components/AddImageComponent.vue";
-import Button from "@/components/ButtonComponent.vue";
 import ComboBox from "@/components/ComboBoxComponent.vue";
 import { useDisplay } from "vuetify";
-
+import InformationBook2 from "@/components/InformationBook2.vue";
 // Sử dụng hook useDisplay để lấy thông tin về các breakpoint
 const display = useDisplay();
 // Khai báo router
@@ -97,11 +74,10 @@ const formData = ref({
 });
 
 // Dữ liệu cho các dropdown
-const categoryOptions = ["Category 1", "Category 2", "Category 3"];
-const classifyOptions = ["Classify 1", "Classify 2", "Classify 3"];
+const categoryOptions = ["NTR", "DRAMA", "FANTASY","LIGHT NOVEL", "TÀI LIỆU"];
 
 // Các label cho input
-const inputLabels = ["Tên sách", "Tác giả", "Thể loại", "Phân loại"];
+const inputLabels = ["Tên sách", "Tác giả", "Thể loại"];
 const repeatCount = inputLabels.length;
 
 // Các phương thức chuyển trang
@@ -115,8 +91,15 @@ const goToSearchBook = () => {
   router.push("/searchbook");
 };
 
+
 // Các items cho AdminComponent
 const itemsA = [
+  {
+    title: "Tìm kiếm",
+    icon: "mdi-magnify",
+    value: "search",
+    method: goToSearchBook,
+  },
   {
     title: "Thêm sách",
     icon: "mdi-plus",
@@ -128,12 +111,6 @@ const itemsA = [
     icon: "mdi-pencil",
     value: "edit",
     method: goToEditBook,
-  },
-  {
-    title: "Tìm kiếm",
-    icon: "mdi-magnify",
-    value: "search",
-    method: goToSearchBook,
   },
 ];
 

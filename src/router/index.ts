@@ -3,8 +3,9 @@ import LoginPage from "@/pages/LoginPage.vue";
 import RegisterPage from "@/pages/RegisterPage.vue";
 import AddBook from "@/pages/AddBookPage.vue";
 import EditBook from "@/pages/EditBookPage.vue";
-import UIAdmin from "@/components/UIAdminComponent.vue";
-
+import ManageBook from "@/pages/ManageBookPage.vue";
+import InfoBook from "@/pages/InfoBook.vue";
+import SearchBook from "@/pages/SearchBook.vue";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -38,9 +39,19 @@ const router = createRouter({
       component: Date,
     },
     {
-      path: "/admin",
-      name: "UIAdmin",
-      component: UIAdmin,
+      path: "/managebook",
+      name: "ManageBook",
+      component: ManageBook,
+    },
+    {
+      path: "/infor",
+      name: "InformationBook",
+      component: InfoBook,
+    },
+    {
+      path: "/Search",
+      name: "SearchBook",
+      component:  SearchBook,
     },
   ],
 });
