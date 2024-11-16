@@ -2,8 +2,8 @@
   <v-list-item
     class="ma-2"
     prepend-avatar="https://randomuser.me/api/portraits/women/85.jpg"
-    :subtitle="!isMobile ? 'loggay.admin@LGttBT.com' : ''"
-    :title="!isMobile ? 'Longay' : ''"
+    :subtitle="!isMobile ? 'Sakura.admin@gmail.com' : ''"
+    :title="!isMobile ? 'Sakura' : ''"
   ></v-list-item>
 </template>
 

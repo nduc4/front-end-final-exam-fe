@@ -118,7 +118,7 @@ export default defineComponent({
   font-size: 1.2rem;
   height: 3em;
   font-weight: bold;
-  /* background-color: #fff; */
+  background-color: #ffffff00;
   color: #666666;
   width: 100%;
   text-align: center;
@@ -128,7 +128,7 @@ export default defineComponent({
   font-size: 1rem;
   margin-top: 5px;
   text-align: center;
-  /* background-color: #fff; */
+  background-color: #ffffff00;
   width: 100%;
   color: #666666;
 }

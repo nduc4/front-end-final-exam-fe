@@ -13,58 +13,58 @@
           max-width="100%"
           color="grey-lighten-4"
         >
+        <!-- title trang chủ -->
           <h1 class="mb-4 text-center">TRANG CHỦ</h1>
           <v-form @submit.prevent="handleSubmit" ref="form">
-            <!-- Tên sách và Tác giả trên một hàng riêng -->
-            <!-- <v-row>
-              <v-col cols="6" class="pt-1 pb-1">
-                <InputField
-                  :label="inputLabels[0]"
-                  v-model="formData.bookTitle"
-                />
-              </v-col>
-              <v-col cols="6" class="pt-1 pb-1">
-                <InputField :label="inputLabels[1]" v-model="formData.author" />
-              </v-col>
-            </v-row> -->
-
-            <!-- Thể loại, Phân loại và Năm xuất bản trên cùng một hàng -->
+            <!-- title hot -->
+             <h2 class="mb-4">Hot</h2>
+             <!-- comboBox Tháng quý năm -->
             <v-row>
-              <v-col cols="1" class="pt-1 pb-1">
-                <ComboBox
-                  :label="inputLabels[0]"
+              <v-col cols="12" class="pt-1 pb-1">
+                <ComboBox                 
                   v-model="formData.category"
                   :items="categoryOptions"
                 />
               </v-col>
-            </v-row>  
+            </v-row>
+<!--============================================================row sách hot============================================================-->
             <v-row>
-              <v-col cols="2" class="pt-1 pb-1 pr-3">
-                <InfomatitonBook3/>
-              </v-col>
-              <v-col cols="2" class="pt-1 pb-1 pr-3">
-                <InformationBook3/>
-              </v-col>
-              <v-col cols="2" class="pt-1 pb-1 pr-3">
-                <InformationBook3/>
-              </v-col>
-              <v-col cols="2" class="pt-1 pb-1 pr-3">
-                <InformationBook3/>
-              </v-col>
-            </v-row>   
-            <v-row>   
-              <v-col cols="1" class="pt-1 pb-1">
-                <ComboBox
-                  :label="inputLabels[1]"
-                  v-model="formData.classify"
-                  :items="classifyOptions"
-              />
-            </v-col>     
-              </v-row>
-            <!-- Nút Xem thêm -->
+              <v-col v-for="(item, index) in 5" :key="index" :xs="12" :md="2" class="pt-1 pb-1 pr-3">
+      <BookHome :item="item" />
+              </v-col>            
+            </v-row>
+<!--============================================================header thể loại============================================================-->
+            <h2>Thể loại</h2>
+<!--============================================================header Thể loại 1============================================================-->
+            <h3 class="pl-10">Fantasy</h3>
+<!--============================================================row sách thể loại 1============================================================-->
             <v-row>
-              <v-col class="text-right">
-                <Button text="Xem thêm" />
+              <v-col v-for="(item, index) in 5":key="index" cols="2" class="pt-1 pb-1 pr-3">
+      <BookHome :item="item" />
+              </v-col>            
+            </v-row>
+<!--============================================================header Thể loại 2============================================================-->
+            <h3 class="pl-10">Fantasy</h3>
+<!--============================================================row sách thể loại 2============================================================-->
+            <v-row>
+              <v-col v-for="(item, index) in 5":key="index" cols="2" class="pt-1 pb-1 pr-3">
+      <BookHome :item="item" />
+              </v-col>            
+            </v-row>
+<!--============================================================header thể loại 3============================================================-->
+            <h3 class="pl-10">Fantasy</h3>
+<!--============================================================row sách thể loại 3============================================================-->
+            <v-row>
+              <v-col v-for="(item, index) in 5":key="index" cols="2" class="pt-1 pb-1 pr-3">
+      <BookHome :item="item" />
+              </v-col>            
+            </v-row>
+<!--============================================================Nút xem thêm============================================================-->
+
+            <v-row>
+              <v-col class="text-center">
+            
+                <Button  background="green" color="white" text="Xem thêm" />
               </v-col>
             </v-row>
           </v-form>
@@ -80,8 +80,8 @@ import { useRouter } from "vue-router";
 import AdminComponent from "@/components/UIAdminComponent.vue";
 import Button from "@/components/ButtonComponent.vue";
 import ComboBox from "@/components/ComboBoxComponent.vue";
-import InfomatitonBook1 from "@/components/InfomatitonBook1.vue";
-import InfomatitonBook3 from "@/components/InfomatitonBook3.vue";
+import InforBook from "@/components/InformationBook1.vue";
+import BookHome from "@/components/InformationBook_Home.vue";
 // Khai báo router
 const router = useRouter();
 
@@ -89,18 +89,13 @@ const router = useRouter();
 const formData = ref({
   bookTitle: "",
   author: "",
-  category: "",
+  category: "Tháng",
   classify: "",
   publicationYear: "",
 });
 
 // Dữ liệu cho các dropdown
-const categoryOptions = ["Tháng", "Quý", "Năm"];
-const classifyOptions = ["Classify 1", "Classify 2", "Classify 3"];
-
-// Label từng mục
-const inputLabels = ["Hot", "Thể Loại", "-", "-"];
-const repeatCount = inputLabels.length;
+    const categoryOptions = ["Tháng", "Quý", "Năm"];
 
 // Các phương thức chuyển trang
 const goToAddBook = () => {
