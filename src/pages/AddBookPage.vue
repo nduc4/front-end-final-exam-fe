@@ -33,13 +33,17 @@
             <!-- Tác giả và Nhà xuất bản trên cùng một hàng -->
             <v-row>
               <v-col cols="12" md="6" class="pt-1 pb-1">
-                <InputField
+                <ComboBox
                   :label="inputLabels[2]"
-                  v-model="formData.publisher"
+                  v-model="formData.genres"
+                  :items="categoryOptions"
                 />
               </v-col>
               <v-col cols="12" md="6" class="pt-1 pb-1">
-                <PublicationYearComponent />
+                <PublicationYearComponent
+                  label="Năm xuất bản"
+                  v-model="formData.publicationYear"
+                />
               </v-col>
             </v-row>
             <!-- Đổi hình ảnh -->
@@ -75,6 +79,9 @@ import ImageChanger from "@/components/AddImageComponent.vue";
 import Button from "@/components/ButtonComponent.vue";
 import PublicationYearComponent from "@/components/PublicationYearComponent.vue";
 import { useDisplay } from "vuetify";
+import ComboBox from "@/components/ComboBoxComponent.vue";
+import AlertComponent from "@/components/AlertComponent.vue";
+import axios from "axios";
 
 // Sử dụng hook useDisplay để lấy thông tin về các breakpoint
 const display = useDisplay();
@@ -105,24 +112,62 @@ const itemsA = [
     method: goToSearchBook,
   },
 ];
-const inputLabels = ["Tên sách", "Tác giả", "Nhà xuất bản"];
+const categoryOptions = ["Fantasty", "Tiểu thuyết", "Tài liệu"];
+const inputLabels = ["Tên sách", "Tác giả", "Thể loại"];
 const repeatCount = inputLabels.length;
+
+let userName = "";
+let email = "";
 
 // Biến chứa dữ liệu form
 const formData = ref({
   bookTitle: "",
   author: "",
-  publisher: "",
+  genres: "",
   publicationYear: "",
 });
 
+const ipAddress = import.meta.env.VITE_IP_ADDRESS;
+const port = import.meta.env.VITE_PORT;
+
+const accessToken = localStorage.getItem("access_token");
+
 // Hàm xử lý submit form
 const handleSubmit = () => {
-  console.log("Form submitted:", formData.value);
-  // Thực hiện xử lý dữ liệu hoặc gọi API ở đây
+  const url = `http://${ipAddress}:${port}/api/book`;
+
+  // Kiểm tra dữ liệu trước khi gửi
+  console.log(
+    "Data: ",
+    formData.value.bookTitle,
+    formData.value.publicationYear,
+    formData.value.author,
+    formData.value.genres
+  );
+
+  axios
+    .post(
+      url,
+      {
+        title: formData.value.bookTitle,
+        published_year: formData.value.publicationYear,
+        authors: formData.value.author,
+        genres: formData.value.genres,
+      },
+      {
+        headers: {
+          // Thêm token vào header Authorization
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    )
+    .then((response) => {
+      console.log("Success:", response.data);
+      router.push("/home");
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert("Kiểm tra lại thông tin");
+    });
 };
 </script>
-<!-- <style>
-@media (min-width: none) {
-}
-</style> -->
