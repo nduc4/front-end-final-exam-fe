@@ -19,19 +19,13 @@
           <v-form @submit.prevent="handleSubmit" ref="form">
             <v-row>
               <v-col cols="12" class="pt-1 pb-1">
-                <InputField
-                  :label="inputLabels[0]"
-                  v-model="formData.bookTitle"
-                />
+                <InputField :label="inputLabels[0]" v-model="formData.bookTitle" />
               </v-col>
             </v-row>
 
             <v-row>
               <v-col cols="12" md="6" class="pt-1 pb-1">
-                <InputField
-                  :label="inputLabels[1]"
-                  v-model="formData.publisher"
-                />
+                <InputField :label="inputLabels[1]" v-model="formData.publisher" />
               </v-col>
               <v-col cols="12" md="6" class="pt-1 pb-1">
                 <PublicationYearComponent />
@@ -43,19 +37,13 @@
             <v-row>
               <v-col
                 :class="{
-                  'text-right':
-                    display.md || display.lg || display.xl || display.xxl,
+                  'text-right': display.md || display.lg || display.xl || display.xxl,
                   'text-center':
                     !display.md && !display.lg && !display.xl && !display.xxl,
                 }"
                 class="mt-8 mt-sm-0"
               >
-                <Button
-                  class="mr-2"
-                  background="red"
-                  color="white"
-                  text="Xóa"
-                />
+                <Button class="mr-2" background="red" color="white" text="Xóa" />
                 <Button
                   @click="showAlert"
                   class="ml-2"
@@ -63,10 +51,7 @@
                   color="white"
                   text="Sửa"
                 />
-                <AlertComponent
-                  v-show="alertVisible"
-                  text="This is a success message!"
-                />
+                <AlertComponent v-show="alertVisible" text="This is a success message!" />
               </v-col>
             </v-row>
           </v-form>
