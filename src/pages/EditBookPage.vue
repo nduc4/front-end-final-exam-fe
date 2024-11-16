@@ -97,8 +97,8 @@ const formData = ref({
 });
 
 // Dữ liệu cho các dropdown
-const categoryOptions = ["Category 1", "Category 2", "Category 3"];
-const classifyOptions = ["Classify 1", "Classify 2", "Classify 3"];
+const categoryOptions = ["Fantasty", "Tiểu thuyết", "Tài liệu"];
+const classifyOptions = ["Sách mới", "Đã mượn", "Hư hỏng"];
 
 // Các label cho input
 const inputLabels = ["Tên sách", "Tác giả", "Thể loại", "Phân loại"];

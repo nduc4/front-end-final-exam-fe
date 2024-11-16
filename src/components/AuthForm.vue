@@ -14,11 +14,12 @@
             {{ subtitle }}
           </v-card-subtitle>
 
-          <v-form>
+          <v-form @submit.prevent="handleSubmit">
             <v-text-field
-              v-model="email"
-              prepend-icon="mdi-email"
-              label="Email"
+              v-model="username"
+              v-if="isRegister"
+              prepend-icon="mdi-account"
+              label="Họ và Tên"
               color="primary"
               required
               outlined
@@ -27,10 +28,21 @@
             ></v-text-field>
 
             <v-text-field
-              v-model="username"
+              v-model="address"
               v-if="isRegister"
-              prepend-icon="mdi-account"
-              label="Họ và Tên"
+              prepend-icon="mdi-map-marker"
+              label="Địa chỉ"
+              color="primary"
+              required
+              outlined
+              hide-details
+              class="mb-4"
+            ></v-text-field>
+
+            <v-text-field
+              v-model="email"
+              prepend-icon="mdi-email"
+              label="Email"
               color="primary"
               required
               outlined
@@ -88,12 +100,23 @@ export default {
       email: "",
       username: this.isRegister ? "" : undefined,
       password: "",
+      address: this.isRegister ? "" : undefined,
       showPassword: false,
     };
   },
   methods: {
     togglePasswordVisibility() {
       this.showPassword = !this.showPassword;
+    },
+    handleSubmit() {
+      if (this.onSubmit) {
+        this.onSubmit({
+          email: this.email,
+          password: this.password,
+          username: this.isRegister ? this.username : undefined,
+          address: this.isRegister ? this.address : undefined,
+        });
+      }
     },
   },
 };

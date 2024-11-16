@@ -10,7 +10,7 @@
       "@/*": ["src/*"]
     },
     "resolveJsonModule": true,
-    "types": ["vite/client", "unplugin-vue-router/client", "vue"],
+    "types": ["vite/client", "unplugin-vue-router/client", "vue", "node"],
     "allowJs": true,
     "strict": true,
     "strictNullChecks": true,
@@ -19,6 +19,7 @@
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "skipLibCheck": true
+    // "typeRoots": ["node_modules/@types"]
   },
   "include": ["src/**/*", "src/**/*.vue", "src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["dist", "node_modules", "cypress"],
