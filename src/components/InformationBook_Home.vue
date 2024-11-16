@@ -2,7 +2,7 @@
   <div class="book-width">
     <!-- <AlertComponent ref="alert" text="Đã trả thành công!" /> -->
     <div v-for="(book, index) in books" :key="book.id" class="book-details">
-      <v-col prepend-icon="mdi-bookmark" md="3" sm="12" class="book-cover">
+      <v-col prepend-icon="mdi-bookmark" md="4" sm="12" class="book-cover">
         <img :src="book.coverUrl" alt="Book Cover" />
       </v-col>
       <v-col md="12" sm="12"  class="book-info">
@@ -69,7 +69,9 @@ export default defineComponent({
   width: 15em;
   height: 23em;
   /* border: 1px solid black; */
-  margin-top: 20px;
+  /* margin-top: 20px auto; */
+  /* margin-left: 10px;
+  margin-right: 10px; */
 }
 
 .book-cover {
@@ -170,7 +172,8 @@ export default defineComponent({
 }
 @media (max-width: 600px) {
   .book-width {
-    justify-content: center; /* Căn giữa cho màn hình nhỏ */
+    /* justify-content: center; Căn giữa cho màn hình nhỏ */
+    
   }
 }
 </style>

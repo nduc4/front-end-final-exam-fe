@@ -17,7 +17,11 @@
           <h1 class="mb-4 text-center">TRANG CHỦ</h1>
           <v-form @submit.prevent="handleSubmit" ref="form">
             <!-- title hot -->
+            <v-row>
+              <v-col :xs="12" :md="2" class="text-center">
              <h2 class="mb-4">Hot</h2>
+              </v-col>
+            </v-row>
              <!-- comboBox Tháng quý năm -->
             <v-row>
               <v-col cols="12" class="pt-1 pb-1">
@@ -29,33 +33,49 @@
             </v-row>
 <!--============================================================row sách hot============================================================-->
             <v-row>
-              <v-col v-for="(item, index) in 5" :key="index" :xs="12" :md="2" class="pt-1 pb-1 pr-3">
+              <v-col v-for="(item, index) in 5" :key="index" :xs="12" :md="2" class="justify-center align-center pt-1 pb-1">
       <BookHome :item="item" />
               </v-col>            
             </v-row>
 <!--============================================================header thể loại============================================================-->
-            <h2>Thể loại</h2>
+            <v-row>
+              <v-col :xs="12" :md="2" class="text-center">
+                <h2>Thể loại</h2>
+              </v-col>
+            </v-row>            
 <!--============================================================header Thể loại 1============================================================-->
-            <h3 class="pl-10">Fantasy</h3>
+            <v-row>
+              <v-col :xs="12" :md="2" class="text-center">
+                <h3>Fantasy</h3>
+              </v-col>
+            </v-row>            
 <!--============================================================row sách thể loại 1============================================================-->
             <v-row>
-              <v-col v-for="(item, index) in 5":key="index" cols="2" class="pt-1 pb-1 pr-3">
+              <v-col v-for="(item, index) in 5" :key="index" :xs="12" :md="2" class="pt-1 pb-1 pr-3" style="width: 100%; height: auto;" >
       <BookHome :item="item" />
               </v-col>            
             </v-row>
 <!--============================================================header Thể loại 2============================================================-->
-            <h3 class="pl-10">Fantasy</h3>
+            <v-row>
+              <v-col :xs="12" :md="2" class="text-center">
+                <h3>Fantasy</h3>
+              </v-col>
+            </v-row>           
 <!--============================================================row sách thể loại 2============================================================-->
             <v-row>
-              <v-col v-for="(item, index) in 5":key="index" cols="2" class="pt-1 pb-1 pr-3">
+              <v-col v-for="(item, index) in 5":key="index" :xs="12" :md="2" class="pt-1 pb-1 pr-3">
       <BookHome :item="item" />
               </v-col>            
             </v-row>
 <!--============================================================header thể loại 3============================================================-->
-            <h3 class="pl-10">Fantasy</h3>
+            <v-row>
+              <v-col :xs="12" :md="2" class="text-center">
+                <h3>Fantasy</h3>
+              </v-col>
+            </v-row>            
 <!--============================================================row sách thể loại 3============================================================-->
             <v-row>
-              <v-col v-for="(item, index) in 5":key="index" cols="2" class="pt-1 pb-1 pr-3">
+              <v-col v-for="(item, index) in 5":key="index" :xs="12" :md="2" class="pt-1 pb-1 pr-3">
       <BookHome :item="item" />
               </v-col>            
             </v-row>
