@@ -5,6 +5,9 @@ import AddBook from "@/pages/AddBookPage.vue";
 import EditBook from "@/pages/EditBookPage.vue";
 import ManageBook from "@/pages/ManageBookPage.vue";
 import Alert from "@/components/UIAdminComponent.vue";
+import BorrowedBooksUsers from "@/pages/BorrowedBooksUsers.vue";
+import BorrowedBooksAdmin from "@/pages/BorrowedBooksAdmin.vue";
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -47,6 +50,21 @@ const router = createRouter({
       path: "/alert",
       name: "Alert",
       component: Alert,
+    },
+    // {
+    //   path: "/infor",
+    //   name: "InformationBook",
+    //   component: InformationBook,
+    // },
+    {
+      path: "/borrowedBooksUsers",
+      name: "BorrowedBooksUsers",
+      component: BorrowedBooksUsers,
+    },
+    {
+      path: "/BorrowedBooksAdmin",
+      name: "BorrowedBooksAdmin",
+      component: BorrowedBooksAdmin,
     },
   ],
 });

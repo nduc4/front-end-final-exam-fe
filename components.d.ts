@@ -7,29 +7,22 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    AddImage: typeof import('./src/components/AddImage.vue')['default']
     AddImageComponent: typeof import('./src/components/AddImageComponent.vue')['default']
     AlertComponent: typeof import('./src/components/AlertComponent.vue')['default']
     AuthForm: typeof import('./src/components/AuthForm.vue')['default']
-    AuthFormComponent: typeof import('./src/components/AuthFormComponent.vue')['default']
     ButtonComponent: typeof import('./src/components/ButtonComponent.vue')['default']
     ComboBoxComponent: typeof import('./src/components/ComboBoxComponent.vue')['default']
-    HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
-    HelloWorldComponent: typeof import('./src/components/HelloWorldComponent.vue')['default']
     InformationBook1: typeof import('./src/components/InformationBook1.vue')['default']
-    Input: typeof import('./src/components/Input.vue')['default']
+    InformationBook2: typeof import('./src/components/InformationBook2.vue')['default']
+    InformationBook3: typeof import('./src/components/InformationBook3.vue')['default']
     InputComponent: typeof import('./src/components/InputComponent.vue')['default']
-    ItemAdmin: typeof import('./src/components/ItemAdmin.vue')['default']
     ItemAdminComponent: typeof import('./src/components/ItemAdminComponent.vue')['default']
     Login: typeof import('./src/components/Login.vue')['default']
-    PublicationYear: typeof import('./src/components/PublicationYear.vue')['default']
     PublicationYearComponent: typeof import('./src/components/PublicationYearComponent.vue')['default']
     Register: typeof import('./src/components/Register.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    UIAdmin: typeof import('./src/components/UIAdmin.vue')['default']
     UIAdminComponent: typeof import('./src/components/UIAdminComponent.vue')['default']
-    UserCard: typeof import('./src/components/UserCard.vue')['default']
     UserCardComponent: typeof import('./src/components/UserCardComponent.vue')['default']
   }
 }
