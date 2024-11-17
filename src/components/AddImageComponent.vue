@@ -70,7 +70,10 @@ const onFileChange = (event: Event) => {
   }
 };
 </script>
-
 <style scoped>
-/* Các kiểu tùy chỉnh nếu cần */
+@media (max-width: 600px) {
+  .v-btn {
+    margin-top: 16px;
+  }
+}
 </style>

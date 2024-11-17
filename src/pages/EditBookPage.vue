@@ -30,22 +30,18 @@
 
             <!-- Thể loại, Phân loại và Năm xuất bản -->
             <v-row>
-              <v-col cols="12" md="4" class="pt-1 pb-1">
+              <v-col cols="12" md="6" class="pt-1 pb-1">
                 <ComboBox
                   :label="inputLabels[2]"
                   v-model="formData.category"
                   :items="categoryOptions"
                 />
               </v-col>
-              <v-col cols="12" md="4" class="pt-1 pb-1">
-                <ComboBox
-                  :label="inputLabels[3]"
-                  v-model="formData.classify"
-                  :items="classifyOptions"
+              <v-col cols="12" md="6" class="pt-1 pb-1">
+                <PublicationYear
+                  label="Năm xuất bản"
+                  v-model="formData.publicationYear"
                 />
-              </v-col>
-              <v-col cols="12" md="4" class="pt-1 pb-1">
-                <PublicationYear />
               </v-col>
             </v-row>
 
@@ -56,12 +52,18 @@
             <v-row>
               <v-col
                 :class="{
-                  'text-center': display.xs,
-                  'text-right': !display.xs,
+                  'text-right':
+                    display.md || display.lg || display.xl || display.xxl,
+                  'text-center':
+                    !display.md && !display.lg && !display.xl && !display.xxl,
                 }"
                 class="mt-8 mt-sm-0"
               >
                 <Button background="green" color="white" text="Xác nhận" />
+                <AlertComponent
+                  v-show="alertVisible"
+                  text="This is a success message!"
+                />
               </v-col>
             </v-row>
           </v-form>
@@ -81,6 +83,7 @@ import ImageChanger from "@/components/AddImageComponent.vue";
 import Button from "@/components/ButtonComponent.vue";
 import ComboBox from "@/components/ComboBoxComponent.vue";
 import { useDisplay } from "vuetify";
+import axios from "axios";
 
 // Sử dụng hook useDisplay để lấy thông tin về các breakpoint
 const display = useDisplay();
@@ -98,10 +101,10 @@ const formData = ref({
 
 // Dữ liệu cho các dropdown
 const categoryOptions = ["Fantasty", "Tiểu thuyết", "Tài liệu"];
-const classifyOptions = ["Sách mới", "Đã mượn", "Hư hỏng"];
+// const classifyOptions = ["Sách mới", "Đã mượn", "Hư hỏng"];
 
 // Các label cho input
-const inputLabels = ["Tên sách", "Tác giả", "Thể loại", "Phân loại"];
+const inputLabels = ["Tên sách", "Tác giả", "Thể loại"];
 const repeatCount = inputLabels.length;
 
 // Các phương thức chuyển trang
@@ -137,9 +140,60 @@ const itemsA = [
   },
 ];
 
-// Hàm xử lý submit
+let userName = "";
+let email = "";
+
+const ipAddress = import.meta.env.VITE_IP_ADDRESS;
+const port = import.meta.env.VITE_PORT;
+
+const bookId = localStorage.getItem("book_id");
+const accessToken = localStorage.getItem("access_token");
+const alertVisible = ref(false);
+
+if (localStorage.getItem("role") == "READER") {
+  router.push("/login");
+}
+// Hàm xử lý submit form
 const handleSubmit = () => {
-  console.log("Form submitted:", formData.value);
-  // Thực hiện xử lý dữ liệu hoặc gọi API ở đây
+  const url = `http://${ipAddress}:${port}/api/book/${bookId}`;
+
+  // Kiểm tra dữ liệu trước khi gửi
+  console.log(
+    "Data: ",
+    formData.value.bookTitle,
+    formData.value.publicationYear,
+    formData.value.author,
+    formData.value.category
+  );
+
+  axios
+    .put(
+      url,
+      {
+        title: formData.value.bookTitle,
+        published_year: formData.value.publicationYear,
+        authors: formData.value.author,
+        category: formData.value.category,
+        classify: formData.value.classify,
+      },
+      {
+        headers: {
+          // Thêm token vào header Authorization
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    )
+    .then((response) => {
+      alertVisible.value = true;
+      // Tự động tắt sau 1,5 giây (nếu cần)
+      setTimeout(() => {
+        alertVisible.value = false;
+      }, 1500);
+      console.log("Success:", response.data);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert("Kiểm tra lại thông tin");
+    });
 };
 </script>

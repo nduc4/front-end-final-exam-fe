@@ -18,7 +18,6 @@
 import { defineProps, defineEmits, computed } from "vue";
 import { useRoute } from "vue-router";
 
-// Định nghĩa props cho component, bao gồm label, modelValue, và items
 const props = defineProps({
   label: String,
   modelValue: String, // Truyền giá trị từ ngoài vào (v-model)
@@ -33,20 +32,18 @@ const updateValue = (value: string) => {
   emit("update:modelValue", value); // Gửi giá trị mới ra ngoài
 };
 
-// Quy tắc xác thực mặc định
 const rules = {
   required: (value: string) => !!value || "Field is required",
 };
 
-// Sử dụng useRoute để truy cập vào route hiện tại
 const route = useRoute();
 
 // Tạo computed property cho rules
 const computedRules = computed(() => {
   if (route.path === "/editbook") {
-    return []; // Không cần quy tắc khi ở trang sửa
+    return [];
   }
-  return [rules.required]; // Quy tắc bắt buộc cho các trang khác
+  return [rules.required];
 });
 </script>
 

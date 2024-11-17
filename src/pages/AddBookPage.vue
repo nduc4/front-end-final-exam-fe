@@ -47,7 +47,7 @@
               </v-col>
             </v-row>
             <!-- Đổi hình ảnh -->
-            <ImageChanger :showImageChanger="true" class="mt-4 pt-0 pb-0" />
+            <ImageChanger :showImageChanger="true" class="mt-8 pt-0 pb-0" />
 
             <!-- Nút submit -->
             <v-row>
@@ -61,6 +61,10 @@
                 class="mt-8 mt-sm-0"
               >
                 <Button background="green" color="white" text="Xác nhận" />
+                <AlertComponent
+                  v-show="alertVisible"
+                  text="This is a success message!"
+                />
               </v-col>
             </v-row>
           </v-form>
@@ -115,7 +119,7 @@ const itemsA = [
 const categoryOptions = ["Fantasty", "Tiểu thuyết", "Tài liệu"];
 const inputLabels = ["Tên sách", "Tác giả", "Thể loại"];
 const repeatCount = inputLabels.length;
-
+const alertVisible = ref(false);
 let userName = "";
 let email = "";
 
@@ -131,6 +135,10 @@ const ipAddress = import.meta.env.VITE_IP_ADDRESS;
 const port = import.meta.env.VITE_PORT;
 
 const accessToken = localStorage.getItem("access_token");
+
+if (localStorage.getItem("role") == "READER") {
+  router.push("/login");
+}
 
 // Hàm xử lý submit form
 const handleSubmit = () => {
@@ -162,8 +170,12 @@ const handleSubmit = () => {
       }
     )
     .then((response) => {
+      alertVisible.value = true;
+      // Tự động tắt sau 1,5 giây (nếu cần)
+      setTimeout(() => {
+        alertVisible.value = false;
+      }, 1500);
       console.log("Success:", response.data);
-      router.push("/home");
     })
     .catch((error) => {
       console.error("Error:", error);
