@@ -186,6 +186,10 @@ const resultHeaders = [
 // Hàm cập nhật kết quả tìm kiếm
 
 const showResults = (data: any) => {
+  console.log(data.title)
+  console.log(data.totalPages)
+  console.log(data.totalDocuments)
+  console.log(data.data)
    if (typeof data === "object" && data !== null) {
     searchResults.value = [
       {
