@@ -23,13 +23,13 @@ export default {
       required: true, // Đảm bảo rằng 'label' là bắt buộc
     },
     modelValue: {
-      type: String, // Hoặc kiểu dữ liệu khác nếu cần
+      type: String,
       required: true,
     },
   },
   data() {
     return {
-      // Rule mặc định
+      // Rule
       rules: {
         required: (value: string) => !!value || "Field is required",
       },

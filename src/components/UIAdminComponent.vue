@@ -94,7 +94,7 @@ export default {
   setup() {
     const userName = ref("");
     const email = ref("");
-    const avatarUrl = ref("https://randomuser.me/api/portraits/women/85.jpg"); // Dự phòng avatar
+    const avatarUrl = ref("https://randomuser.me/api/portraits/women/85.jpg"); // avatar
 
     const ipAddress = import.meta.env.VITE_IP_ADDRESS;
     const port = import.meta.env.VITE_PORT;
@@ -112,7 +112,8 @@ export default {
           // Cập nhật thông tin người dùng
           userName.value = response.data.fullName;
           email.value = response.data.email;
-          avatarUrl.value = response.data.avatarUrl || avatarUrl.value; // Nếu không có avatar, sử dụng avatar mặc định
+          avatarUrl.value = response.data.avatarUrl;
+          localStorage.setItem("role", response.data.role);
         })
         .catch((error) => {
           console.log("Lỗi khi gọi API:", error);
