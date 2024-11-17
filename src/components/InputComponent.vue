@@ -24,7 +24,7 @@ export default {
     return {
       // Rule mặc định
       rules: {
-        required: (value: string) => !!value || "ĐIỀN VÀO KHÔNG BỐ MÀY ĐẤM CHẾT GIỜ",
+        required: (value: string) => !!value || "Vui lòng nhập thông tin vào",
       },
     };
   },
