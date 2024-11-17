@@ -87,7 +87,7 @@ const goToEditBook = () => {
   router.push("/editbook");
 };
 const goToSearchBook = () => {
-  router.push("/searchbook");
+  router.push("/search");
 };
 
 const itemsA = [

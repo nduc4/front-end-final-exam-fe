@@ -50,7 +50,7 @@ const router = createRouter({
       component: InfoBook,
     },
     {
-      path: "/Search",
+      path: "/search",
       name: "SearchBook",
       component:  SearchBook,
     },

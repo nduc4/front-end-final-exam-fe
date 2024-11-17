@@ -42,12 +42,9 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import AdminComponent from "@/components/UIAdminComponent.vue";
-import InputField from "@/components/InputComponent.vue";
-import ComboBox from "@/components/ComboBoxComponent.vue";
 import { useDisplay } from "vuetify";
 import InformationBook1 from "@/components/InformationBook1.vue";
-import InformationBook3 from "@/components/InformationBook3.vue";
-import InformationBook2 from "@/components/InformationBook2.vue";
+
 // Sử dụng hook useDisplay để lấy thông tin về các breakpoint
 const display = useDisplay();
 // Khai báo router
