@@ -33,7 +33,7 @@ defineProps({
     required: true,
   },
 });
-  data() {
+data() {
     return {
       book: {
         title: "defineProps.title",

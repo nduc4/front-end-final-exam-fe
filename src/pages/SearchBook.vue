@@ -150,6 +150,7 @@ interface Book {
 }
 
 // Lưu trữ kết quả tìm kiếm
+
 // Hàm xử lý submit form
 const handleSubmit = async () => {
   try {
@@ -195,7 +196,6 @@ const handleSubmit = async () => {
 
 
 // Hàm cập nhật kết quả tìm kiếm
-// Dữ liệu kết quả tìm kiếm
 const searchResults = ref<Book[]>([]);
 
 // Headers cho bảng hiển thị kết quả
@@ -216,12 +216,12 @@ const showResults = (data: any[]) => {
       title: item.title || "Chưa có tên",
       published_year: item.published_year
         ? new Date(item.published_year).toLocaleDateString()
-          : "Chưa có",
+        : "Chưa có",
         genre: item.genre_id
         ? item.genre_id
             .map((id: string) => genreMap[id] || "") // Thay thế ID bằng tên
             .join(", ") // Gộp các thể loại thành chuỗi
-          : "Không rõ",
+        : "Không rõ",
     }));
   } else {
     // Nếu không có dữ liệu

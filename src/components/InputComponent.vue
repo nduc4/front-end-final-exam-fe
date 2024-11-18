@@ -6,10 +6,10 @@
       :model-value="modelValue"
       @update:modelValue="updateValue"
       :items="items"
-    :rules="computedRules"
-    density="compact"
-    outlined
-    variant="solo-inverted"
+      :rules="computedRules"
+      density="compact"
+      outlined
+      variant="solo-inverted"
     ></v-combobox>
   </div>
 </template>
@@ -36,22 +36,19 @@ const rules = {
   required: (value: string) => !!value || "Field is required",
 };
 
-      const route = useRoute();
+const route = useRoute();
 
-      // Kiểm tra xem đường dẫn có phải là './editbook' không
-      if (route.path === "/editbook") {
-        // Nếu là 'editbook', không cần dùng rule 'required'
-        return [];
-      }
-      // Nếu không phải 'editbook', sử dụng rule mặc định
-      return [this.rules.required];
-    },
-  },
-};
+// Tạo computed property cho rules
+const computedRules = computed(() => {
+  if (route.path === "/editbook") {
+    return [];
+  }
+  return [rules.required];
+});
 </script>
 
 <style scoped>
-.v-text-field {
+.v-combobox {
   max-width: 100%;
 }
 </style>
