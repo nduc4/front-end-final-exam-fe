@@ -14,6 +14,7 @@
           color="grey-lighten-4"
         >
           <h1 class="mb-4 text-center">TÌM KIẾM</h1>
+          <!-- Sử dụng @submit.prevent trên form để gọi handleSubmit -->
           <v-form @submit.prevent="handleSubmit" ref="form">
             <!-- Tên sách và Tác giả -->
             <v-row>
@@ -27,6 +28,9 @@
                 <InputField
                   :label="inputLabels[1]"
                   v-model="formData.author"
+                  item-text="name"
+                  item-value="id"
+                  return-object
                 />
               </v-col>
             </v-row>

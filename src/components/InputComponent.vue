@@ -10,28 +10,28 @@
   ></v-text-field>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { defineProps, defineEmits, computed } from "vue";
 import { useRoute } from "vue-router";
 
-export default {
-  props: {
-    label: {
-      type: String,
-      required: true,
-    },
-  },
-  data() {
-    return {
-      // Rule mặc định
-      rules: {
-        required: (value: string) => !!value || "Vui lòng nhập thông tin vào",
-      },
-    };
-  },
-  computed: {
-    // Tạo computed property để kiểm tra điều kiện đường dẫn và trả về rules phù hợp
-    computedRules() {
-      // Sử dụng useRoute để truy xuất thông tin về route hiện tại
+const props = defineProps({
+  label: String,
+  modelValue: String, // Truyền giá trị từ ngoài vào (v-model)
+  items: Array as () => string[], // Dữ liệu cho combobox
+});
+
+// Định nghĩa emits để gửi sự kiện khi giá trị thay đổi
+const emit = defineEmits(["update:modelValue"]);
+
+// Hàm cập nhật giá trị khi người dùng thay đổi trong combobox
+const updateValue = (value: string) => {
+  emit("update:modelValue", value); // Gửi giá trị mới ra ngoài
+};
+
+const rules = {
+  required: (value: string) => !!value || "Field is required",
+};
+
       const route = useRoute();
 
       // Kiểm tra xem đường dẫn có phải là './editbook' không
