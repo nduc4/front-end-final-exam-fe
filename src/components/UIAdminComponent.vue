@@ -112,7 +112,6 @@ export default {
           // Cập nhật thông tin người dùng
           userName.value = response.data.fullName;
           email.value = response.data.email;
-          avatarUrl.value = response.data.avatarUrl;
           localStorage.setItem("role", response.data.role);
         })
         .catch((error) => {

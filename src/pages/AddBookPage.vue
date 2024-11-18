@@ -120,8 +120,6 @@ const categoryOptions = ["Fantasty", "Tiểu thuyết", "Tài liệu"];
 const inputLabels = ["Tên sách", "Tác giả", "Thể loại"];
 const repeatCount = inputLabels.length;
 const alertVisible = ref(false);
-let userName = "";
-let email = "";
 
 // Biến chứa dữ liệu form
 const formData = ref({
@@ -136,31 +134,30 @@ const port = import.meta.env.VITE_PORT;
 
 const accessToken = localStorage.getItem("access_token");
 
+const url = `http://${ipAddress}:${port}/api/book`;
+
+const currentDate = new Date();
+const formattedCurrentDate = `${currentDate.getFullYear()}-${String(
+  currentDate.getMonth() + 1
+).padStart(2, "0")}-${String(currentDate.getDate()).padStart(2, "0")}`;
 if (localStorage.getItem("role") == "READER") {
   router.push("/login");
 }
 
 // Hàm xử lý submit form
 const handleSubmit = () => {
-  const url = `http://${ipAddress}:${port}/api/book`;
-
-  // Kiểm tra dữ liệu trước khi gửi
-  console.log(
-    "Data: ",
-    formData.value.bookTitle,
-    formData.value.publicationYear,
-    formData.value.author,
-    formData.value.genres
-  );
-
+  // Kiểm tra và gán lại giá trị cho publicationDate
+  if (new Date(formData.value.publicationYear) > currentDate) {
+    formData.value.publicationYear = formattedCurrentDate;
+  }
   axios
     .post(
       url,
       {
         title: formData.value.bookTitle,
         published_year: formData.value.publicationYear,
-        authors: formData.value.author,
-        genres: formData.value.genres,
+        authors: [formData.value.author],
+        genres: [formData.value.genres],
       },
       {
         headers: {

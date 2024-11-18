@@ -95,13 +95,11 @@ const formData = ref({
   bookTitle: "",
   author: "",
   category: "",
-  classify: "",
   publicationYear: "",
 });
 
 // Dữ liệu cho các dropdown
 const categoryOptions = ["Fantasty", "Tiểu thuyết", "Tài liệu"];
-// const classifyOptions = ["Sách mới", "Đã mượn", "Hư hỏng"];
 
 // Các label cho input
 const inputLabels = ["Tên sách", "Tác giả", "Thể loại"];
@@ -140,9 +138,6 @@ const itemsA = [
   },
 ];
 
-let userName = "";
-let email = "";
-
 const ipAddress = import.meta.env.VITE_IP_ADDRESS;
 const port = import.meta.env.VITE_PORT;
 
@@ -156,15 +151,16 @@ if (localStorage.getItem("role") == "READER") {
 // Hàm xử lý submit form
 const handleSubmit = () => {
   const url = `http://${ipAddress}:${port}/api/book/${bookId}`;
+  // Lấy ngày hiện tại
+  const currentDate = new Date();
+  const formattedCurrentDate = `${currentDate.getFullYear()}-${String(
+    currentDate.getMonth() + 1
+  ).padStart(2, "0")}-${String(currentDate.getDate()).padStart(2, "0")}`;
 
-  // Kiểm tra dữ liệu trước khi gửi
-  console.log(
-    "Data: ",
-    formData.value.bookTitle,
-    formData.value.publicationYear,
-    formData.value.author,
-    formData.value.category
-  );
+  // Kiểm tra và gán lại giá trị cho publicationDate
+  if (new Date(formData.value.publicationYear) > currentDate) {
+    formData.value.publicationYear = formattedCurrentDate;
+  }
 
   axios
     .put(
@@ -172,9 +168,8 @@ const handleSubmit = () => {
       {
         title: formData.value.bookTitle,
         published_year: formData.value.publicationYear,
-        authors: formData.value.author,
-        category: formData.value.category,
-        classify: formData.value.classify,
+        authors: [formData.value.author],
+        genres: [formData.value.category],
       },
       {
         headers: {

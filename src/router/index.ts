@@ -4,7 +4,6 @@ import RegisterPage from "@/pages/RegisterPage.vue";
 import AddBook from "@/pages/AddBookPage.vue";
 import EditBook from "@/pages/EditBookPage.vue";
 import ManageBook from "@/pages/ManageBookPage.vue";
-import Alert from "@/components/UIAdminComponent.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -42,11 +41,6 @@ const router = createRouter({
       path: "/managebook",
       name: "ManageBook",
       component: ManageBook,
-    },
-    {
-      path: "/alert",
-      name: "Alert",
-      component: Alert,
     },
   ],
 });
