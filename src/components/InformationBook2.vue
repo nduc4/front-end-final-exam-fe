@@ -16,13 +16,30 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
+
+
+// Định nghĩa props
+defineProps({
+  title: {
+    type: String,
+    required: true,
+  },
+  author: {
+    type: String,
+    required: true,
+  },
+  publicationYear: {
+    type: String,
+    required: true,
+  },
+});
   data() {
     return {
       book: {
-        title: "Đắc nhân tâm",
-        author: "Tác Giả Mẫu",
+        title: "defineProps.title",
+        author: "defineProps.author",
         coverUrl: "https://nxbhcm.com.vn/Image/Biasach/dacnhantam86.jpg",
-        addedDate: "01/11/2024",
+        addedDate: "publicationYear",
         genre: "Học thuật",
         status: "Cũ",
       },

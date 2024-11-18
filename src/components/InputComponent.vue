@@ -1,13 +1,17 @@
 <template>
   <div class="input-label-container">
     <label class="input-label">{{ label }}</label>
-  </div>
-  <v-text-field
+    <!-- Sử dụng v-combobox với model-value và update:modelValue -->
+    <v-combobox
+      :model-value="modelValue"
+      @update:modelValue="updateValue"
+      :items="items"
     :rules="computedRules"
     density="compact"
     outlined
     variant="solo-inverted"
-  ></v-text-field>
+    ></v-combobox>
+  </div>
 </template>
 
 <script setup lang="ts">

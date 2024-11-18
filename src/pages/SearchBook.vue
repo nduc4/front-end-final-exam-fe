@@ -44,9 +44,10 @@
                   :items="categoryOptions"
                 />
               </v-col>
-            </v-row>
 
+            </v-row>
             <!-- Nút Tìm Kiếm -->
+
             <ButtonComponent
               style="margin-top: 30px;"
               color="white"
@@ -54,7 +55,6 @@
               @click="handleSubmit"
             ></ButtonComponent>
           </v-form>
-
           <!-- Hiển thị kết quả tìm kiếm -->
           <v-data-table
             v-if="searchResults.length"
@@ -82,6 +82,7 @@
 </template>
 
 
+
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRouter } from "vue-router";
@@ -91,15 +92,15 @@ import ComboBox from "@/components/ComboBoxComponent.vue";
 import ButtonComponent from "@/components/ButtonComponent.vue";
 import axios from "axios";
 
+
 // Khai báo router
 const router = useRouter();
 
 // Dữ liệu form
 const formData = ref({
-  Title: "",
-  author: "",
-  category: "",
-  classify: "",
+  Title: '',
+  author: '',
+  category: '',
 });
 
 // Dữ liệu cho các dropdown
@@ -132,11 +133,6 @@ const itemsA = [
 ];
 
 // Định nghĩa authorMap
-const authorMap: { [key: string]: string } = {
-  "1": "Tác giả 1",
-  "2": "Tác giả 2",
-  "3": "Tác giả 3", // Thêm các tác giả khác tại đây
-};
 
 // Định nghĩa genreMap (nếu cần)
 const genreMap: { [key: string]: string } = {
@@ -158,20 +154,44 @@ interface Book {
 const handleSubmit = async () => {
   try {
     console.log("Form submitted:", formData.value);
-    const params = new URLSearchParams();
-    Object.entries(formData.value).forEach(([key, value]) => {
-      if (value) params.append(key, value); // Bỏ qua các giá trị rỗng
-    });
 
-    const response = await axios.get(`http://103.77.242.79:3005/api/book?page=1&limit=10&title=long`);
+    // Tạo params từ formData để gửi request
+    const params = new URLSearchParams();
+
+    if (formData.value.Title) {
+      params.append("title", formData.value.Title);
+    }
+
+    if (formData.value.author) {
+      params.append("author", formData.value.author); // Gửi ID tác giả
+    }
+
+    if (formData.value.category) {
+      params.append("category", formData.value.category);
+    }
+
+    // Thêm các tham số cho request
+
+    // Gửi request đến API với params
+    const response = await axios.get("http://103.77.242.79:3005/api/book", {
+      params, // params chứa các tham số như title, page, limit
+    });
+    console.log("FormData sau khi nhập:", formData.value);
     console.log("Kết quả tìm kiếm:", response.data);
-    // Gọi showResults để xử lý dữ liệu nhận được
-    showResults(response.data);
+
+    // Cập nhật kết quả tìm kiếm
+    if (response.data?.data?.length > 0) {
+      showResults(response.data.data); // Truyền toàn bộ mảng `data` khi có kết quả
+    } else {
+      searchResults.value = [];
+      alert("Không tìm thấy kết quả nào.");
+    }
   } catch (error) {
     console.error("Lỗi khi gọi API:", error);
     alert("Không thể thực hiện tìm kiếm. Vui lòng thử lại.");
   }
 };
+
 
 
 // Hàm cập nhật kết quả tìm kiếm
@@ -189,34 +209,24 @@ const resultHeaders = [
 
 // Hàm cập nhật kết quả tìm kiếm
 
-const showResults = (data: any) => {
-   if (typeof data === "object" && data !== null) {
-    searchResults.value = [
-      {
-        title: data.title || "Chưa có tên",
-        published_year: data.published_year
-          ? new Date(data.published_year).toLocaleDateString()
+const showResults = (data: any[]) => {
+  if (Array.isArray(data) && data.length > 0) {
+    // Chuyển đổi từng đối tượng trong mảng thành dữ liệu phù hợp
+    searchResults.value = data.map((item) => ({
+      title: item.title || "Chưa có tên",
+      published_year: item.published_year
+        ? new Date(item.published_year).toLocaleDateString()
           : "Chưa có",
-        author: data.author_id
-          ? data.author_id.map((id: string) => authorMap[id] || "Không rõ").join(", ")
+        genre: item.genre_id
+        ? item.genre_id
+            .map((id: string) => genreMap[id] || "") // Thay thế ID bằng tên
+            .join(", ") // Gộp các thể loại thành chuỗi
           : "Không rõ",
-        genre: data.genre_id
-          ? data.genre_id.map((id: string) => genreMap[id] || "Không rõ").join(", ")
-          : "Không rõ",
-      },
-    ];
-  }
-  // Nếu dữ liệu không hợp lệ
-  else {
+    }));
+  } else {
+    // Nếu không có dữ liệu
     searchResults.value = [];
-    alert("Dữ liệu không hợp lệ hoặc rỗng!");
+    alert("Không tìm thấy kết quả nào hoặc dữ liệu không hợp lệ.");
   }
-
 };
-
-
-
-
-
 </script>
-
