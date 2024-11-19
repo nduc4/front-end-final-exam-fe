@@ -104,7 +104,7 @@ const formData = ref({
 });
 
 // Dữ liệu cho các dropdown
-const categoryOptions = [ "FANTASY", "LIGHT NOVEL"];
+const categoryOptions = [ "FANTASY", "TIỂU THUYẾT"];
 
 // Các label cho input
 const inputLabels = ["Tên sách", "Tác giả", "Thể loại"];
@@ -132,10 +132,6 @@ const itemsA = [
   },
 ];
 
-// Định nghĩa authorMap
-
-// Định nghĩa genreMap (nếu cần)
-
 // Khai báo kiểu dữ liệu cho sách
 interface Book {
   title: string;
@@ -143,9 +139,6 @@ interface Book {
   author:string;
   genre: string;
 }
-
-
-
 
 
 const fetchAuthorsByIds = async (authorIds: string[]): Promise<void> => {
@@ -226,8 +219,6 @@ const handleSubmit = async () => {
   }
 };
 
-
-
 const authorMap: { value: { [key: string]: { name: string } } } = {
   value: {},
 };
@@ -235,8 +226,6 @@ const authorMap: { value: { [key: string]: { name: string } } } = {
 const genreMap: { value: { [key: string]: { name: string } } } = {
   value: {},
 };
-
-
 // Hàm cập nhật kết quả tìm kiếm
 const searchResults = ref<Book[]>([]);
 
@@ -276,15 +265,11 @@ const showResults = async (data: any[]) => {
       published_year: item.published_year
         ? new Date(item.published_year).toLocaleDateString()
         : "Chưa có",
-
-
         author: item.author_id && item.author_id.length > 0
         ? item.author_id
             .map((id: string) => authorMap.value[id]?.name || "Không rõ") // Lấy tên tác giả từ authorMap
             .join(", ") // Nối các tên tác giả nếu có nhiều
         : "Không rõ", // Nếu không có author_id, trả về "Không rõ"
-
-
         genre: item.genre_id && item.genre_id.length > 0
         ? item.genre_id
             .map((id: string) => genreMap.value[id]?.name || "Không rõ") // Lấy tên thể loại từ genreMap
