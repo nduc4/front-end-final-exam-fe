@@ -160,23 +160,14 @@ const genreMap = ref<{ [key: string]: string }>({});
 
 const fetchAuthorsByIds = async (authorIds: string[]): Promise<void> => {
   try {
-    console.log("Các ID tác giả:", authorIds);
-
-    const response = await axios.get("http://103.77.242.79:3005/api/author/list",{
-
-     }
-  );
-
-
-    console.log("Yêu cầu API:", response.config);
-    console.log("Dữ liệu trả về:", response.data);
-
-    const authors = response.data;
-    authors.forEach((author: Author) => {
-      authorMap.value[author.id] = author.name;
+    const params = new URLSearchParams();
+    authorIds.forEach(id => params.append("ids", id));
+    const response = await axios.get("http://103.77.242.79:3005/api/author/list", {
+      params,
     });
+    console.log("Danh sách tác giả:", response.data);
   } catch (error) {
-    console.error("Lỗi khi lấy danh sách tác giả:", error);
+    console.error("Lỗi khi gọi API:", error);
   }
 };
 
@@ -276,14 +267,14 @@ const showResults = async (data: any[]) => {
   }
 
   // Lấy tất cả author_id và genre_id từ kết quả
-  const allAuthorIds = [...new Set(data.flatMap((item) => item.author_ids || []))];
-  const allGenreIds = [...new Set(data.flatMap((item) => item.genre_ids || []))];
+  const allAuthorIds = [...new Set(data.flatMap((item) => item.author_id || []))];
+  // const allGenreIds = [...new Set(data.flatMap((item) => item.genre_ids || []))];  
 
   try {
     // Gọi API để lấy tên tác giả và thể loại
     await Promise.all([
       fetchAuthorsByIds(allAuthorIds),
-      fetchGenresByIds(allGenreIds),
+      // fetchGenresByIds(allGenreIds),
     ]);
 
     // Chuyển đổi dữ liệu
