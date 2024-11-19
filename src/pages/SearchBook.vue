@@ -183,21 +183,14 @@ const genreMap = ref<{ [key: string]: { name: string } }>({});
 // Hàm làm giàu thông tin sách với tác giả và thể loại
 const enrichBooksWithAuthorsAndGenres = async (books: any[]) => {
   // Lấy danh sách các ID cần xử lý
-  const allAuthorIds = [
-    ...new Set(books.flatMap((item) => item.author_id || [])),
-  ];
-  const allGenreIds = [
-    ...new Set(books.flatMap((item) => item.genre_id || [])),
-  ];
+  const allAuthorIds = [...new Set(books.flatMap((item) => item.author_id || []))];
+  const allGenreIds = [...new Set(books.flatMap((item) => item.genre_id || []))];
 
   console.log("Danh sách author_id:", allAuthorIds);
   console.log("Danh sách genre_id:", allGenreIds);
 
   // Gọi API để lấy thông tin
-  await Promise.all([
-    fetchAuthorsByIds(allAuthorIds),
-    fetchGenresByIds(allGenreIds),
-  ]);
+  await Promise.all([fetchAuthorsByIds(allAuthorIds), fetchGenresByIds(allGenreIds)]);
 
   // Làm giàu dữ liệu sách với tên tác giả và thể loại
   books.forEach((book) => {
@@ -221,10 +214,9 @@ const fetchAuthorsByIds = async (authorIds: string[]): Promise<void> => {
     const params = new URLSearchParams();
     uniqueIds.forEach((id) => params.append("ids", id));
 
-    const response = await axios.get(
-      "http://103.77.242.79:3005/api/author/list",
-      { params }
-    );
+    const response = await axios.get("http://103.77.242.79:3005/api/author/list", {
+      params,
+    });
 
     response.data.forEach((author: any) => {
       authorMap.value[author._id] = { name: author.name };
@@ -244,10 +236,9 @@ const fetchGenresByIds = async (genreIds: string[]): Promise<void> => {
     const params = new URLSearchParams();
     uniqueIds.forEach((id) => params.append("ids", id));
 
-    const response = await axios.get(
-      "http://103.77.242.79:3005/api/genre/list",
-      { params }
-    );
+    const response = await axios.get("http://103.77.242.79:3005/api/genre/list", {
+      params,
+    });
 
     response.data.forEach((genre: any) => {
       genreMap.value[genre._id] = { name: genre.name };
@@ -257,9 +248,63 @@ const fetchGenresByIds = async (genreIds: string[]): Promise<void> => {
     console.error("Lỗi khi gọi API:", error);
   }
 };
-const borrowBook = (item: Book) => {
-  localStorage.setItem("book_id", item._id); // Lưu _id của cuốn sách vào localStorage
-  router.push("/"); // Điều hướng đến trang mong muốn
+
+const borrowBook = async (item: Book) => {
+  try {
+    // Lưu _id của cuốn sách vào localStorage
+    const bookId = item._id;
+    localStorage.setItem("book_id", bookId);
+
+    // Kiểm tra bookId
+    if (!bookId) {
+      console.error("Không tìm thấy book_id.");
+      return;
+    }
+
+    // Bước 1: Gửi yêu cầu GET để lấy danh sách bản sao của cuốn sách
+    const getResponse = await axios.get(
+      `http://103.77.242.79:3005/api/book-instance/${bookId}`
+    );
+    const bookInstances = getResponse.data;
+    console.log(bookInstances);
+    // Kiểm tra dữ liệu trả về
+    if (!Array.isArray(bookInstances) || bookInstances.length === 0) {
+      console.error("Không tìm thấy bản sao sách nào hoặc dữ liệu trả về không hợp lệ.");
+      return;
+    }
+
+    // Lọc bản sao có trạng thái "AVAILABLE"
+    const availableCopy = bookInstances.find(
+      (instance: any) => instance.status === "AVAILABLE"
+    );
+
+    if (!availableCopy) {
+      console.error("Không tìm thấy bản sao sách nào có trạng thái 'AVAILABLE'.");
+      return;
+    }
+    console.log(accessToken);
+    const bookCopyId = availableCopy._id;
+    console.log(bookCopyId);
+    // Bước 2: Gửi yêu cầu POST để mượn sách với id bản sao
+    const postResponse = await axios.post(
+  `http://103.77.242.79:3005/api/loan/${bookCopyId}`,
+  {}, // Body trống, nếu API không yêu cầu dữ liệu trong body
+  {
+    headers: {
+      Authorization: `Bearer ${accessToken}`, // Thêm token vào header
+    },
+  }
+);
+
+    console.log("Mượn sách thành công:", postResponse.data);
+  } catch (error: any) {
+    // Xử lý lỗi nếu có
+    if (error.response) {
+      console.error(`Lỗi API (${error.response.status}):`, error.response.data);
+    } else {
+      console.error("Lỗi khác:", error.message);
+    }
+  }
 };
 </script>
 <style scoped>
