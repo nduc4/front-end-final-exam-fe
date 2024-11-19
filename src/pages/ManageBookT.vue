@@ -49,7 +49,8 @@
                 <th class="text-left">Tác giả</th>
                 <th class="text-left">Ngày xuất bản</th>
                 <th class="text-left">Thể loại</th>
-                <th class="text-left">Mượn sách</th>
+                <th class="text-left">Hành động</th>
+                <!-- Cột hành động -->
               </tr>
             </thead>
             <tbody>
@@ -58,8 +59,15 @@
                 <td>{{ item.author }}</td>
                 <td>{{ item.published_year }}</td>
                 <td>{{ item.genre }}</td>
-                <td @click="borrowBook(item)">
-                  <v-btn color="blue">Mượn</v-btn>
+                <td class="actions-cell">
+                  <!-- Biểu tượng chỉnh sửa -->
+                  <v-icon class="mr-2" color="blue" @click="handleEdit(item)">
+                    mdi-pencil
+                  </v-icon>
+                  <!-- Biểu tượng xóa -->
+                  <v-icon color="red" @click="handleDelete(item)">
+                    mdi-delete
+                  </v-icon>
                 </td>
               </tr>
             </tbody>
@@ -257,9 +265,36 @@ const fetchGenresByIds = async (genreIds: string[]): Promise<void> => {
     console.error("Lỗi khi gọi API:", error);
   }
 };
-const borrowBook = (item: Book) => {
-  localStorage.setItem("book_id", item._id); // Lưu _id của cuốn sách vào localStorage
-  router.push("/"); // Điều hướng đến trang mong muốn
+const handleEdit = (book: Book) => {
+  localStorage.setItem("book_id", book._id);
+  router.push("/editbook");
+};
+
+const handleDelete = async (book: Book) => {
+  const confirmDelete = confirm(`Bạn có chắc muốn xóa sách "${book.title}"?`);
+  if (confirmDelete) {
+    try {
+      // Gọi API xóa sách
+      const response = await axios.delete(
+        `http://103.77.242.79:3005/api/book/${book._id}`, // Sử dụng _id ở đây
+        {
+          headers: {
+            // Thêm token vào header Authorization
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      // Cập nhật lại danh sách sách sau khi xóa
+      searchResults.value = searchResults.value.filter(
+        (b) => b._id !== book._id
+      ); // Sử dụng _id thay vì id
+      alert(`Đã xóa sách: ${book.title}`);
+    } catch (error) {
+      console.error("Lỗi khi xóa sách:", error);
+      alert("Không thể xóa sách. Vui lòng thử lại.");
+    }
+  }
 };
 </script>
 <style scoped>
