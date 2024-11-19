@@ -22,8 +22,10 @@ declare module 'vue-router/auto-routes' {
     '/AddBookPage': RouteRecordInfo<'/AddBookPage', '/AddBookPage', Record<never, never>, Record<never, never>>,
     '/AuthFormComponent': RouteRecordInfo<'/AuthFormComponent', '/AuthFormComponent', Record<never, never>, Record<never, never>>,
     '/EditBookPage': RouteRecordInfo<'/EditBookPage', '/EditBookPage', Record<never, never>, Record<never, never>>,
+    '/InfoBook': RouteRecordInfo<'/InfoBook', '/InfoBook', Record<never, never>, Record<never, never>>,
     '/LoginPage': RouteRecordInfo<'/LoginPage', '/LoginPage', Record<never, never>, Record<never, never>>,
-    '/ManageBookPage': RouteRecordInfo<'/ManageBookPage', '/ManageBookPage', Record<never, never>, Record<never, never>>,
+    '/ManageBookT': RouteRecordInfo<'/ManageBookT', '/ManageBookT', Record<never, never>, Record<never, never>>,
     '/RegisterPage': RouteRecordInfo<'/RegisterPage', '/RegisterPage', Record<never, never>, Record<never, never>>,
+    '/SearchBook': RouteRecordInfo<'/SearchBook', '/SearchBook', Record<never, never>, Record<never, never>>,
   }
 }

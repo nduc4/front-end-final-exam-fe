@@ -109,11 +109,11 @@ const repeatCount = inputLabels.length;
 const goToAddBook = () => {
   router.push("/addbook");
 };
-const goToEditBook = () => {
-  router.push("/editbook");
+const goToManageBook = () => {
+  router.push("/managebook");
 };
 const goToSearchBook = () => {
-  router.push("/searchbook");
+  router.push("/search");
 };
 
 // Các items cho AdminComponent
@@ -128,7 +128,7 @@ const itemsA = [
     title: "Chỉnh sửa",
     icon: "mdi-pencil",
     value: "edit",
-    method: goToEditBook,
+    method: goToManageBook,
   },
   {
     title: "Tìm kiếm",
