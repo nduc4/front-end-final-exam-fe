@@ -1,49 +1,45 @@
 <template>
   <div class="book-width">
     <!-- <AlertComponent ref="alert" text="Đã trả thành công!" /> -->
-    <div v-for="(book, index) in books" :key="book.id" class="book-details">
+    <div v-for="(item, index) in Bookitems" :key="index" class="book-details">
       <v-col prepend-icon="mdi-bookmark" md="4" sm="12" class="book-cover">
-        <img :src="book.coverUrl" alt="Book Cover" />
+        <img src="https://nxbhcm.com.vn/Image/Biasach/dacnhantam86.jpg" alt="Book Cover"/>
       </v-col>
       <v-col md="12" sm="12"  class="book-info">
-        <div class="book-title">{{ book.title }}</div>
-        <div class="book-author">{{ book.author }}</div>
+        <div class="book-title">{{ item.title }}</div>
+        <div class="book-author">{{ item.author }}</div>
       </v-col>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent,ref } from "vue";
 import Button from "@/components/ButtonComponent.vue";
 import AlertComponent from "@/components/AlertComponent.vue";
 
 
 interface Book {
-  id: number;
+  _id: string;
   title: string;
   author: string;
-  coverUrl: string;
+  published_year: string;
+  genre: string;
 }
 
 export default defineComponent({
+  name:"BookHome",
   components: {
     Button,
     AlertComponent,
   }, 
   data() {
     return {
-      books: [
-        {
-          id: 1,
-          title: "",
-          author: "",
-          coverUrl: "https://nxbhcm.com.vn/Image/Biasach/dacnhantam86.jpg",
-        },
-      ]}
+      author: ref(""),
+    };
     },
    props: {
-      items: {
+      Bookitems: {
         type: Array as () => Book[],
         }
     },
@@ -61,7 +57,7 @@ export default defineComponent({
   display: flex;
   justify-content: left;
   flex-wrap: wrap;
-  
+  gap: 20px;
 }
 
 .book-details {

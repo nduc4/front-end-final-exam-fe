@@ -33,8 +33,8 @@
             </v-row>
 <!--============================================================row sách hot============================================================-->
             <v-row>
-              <v-col v-for="(item, index) in searchResults" :key="index" :xs="12" :md="2" class="justify-center align-center pt-1 pb-1">
-      <BookHome :item="item" />
+              <v-col v-for="(item, index) in searchResults" :key="index" :xs="12" :md="3" class="justify-center align-center pt-1 pb-1">
+      <BookHome :Bookitems="[item]" />
               </v-col>            
             </v-row>
 <!--============================================================header thể loại============================================================-->
