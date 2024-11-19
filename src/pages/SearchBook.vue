@@ -163,7 +163,7 @@ const fetchAuthorsByIds = async (authorIds: string[]): Promise<void> => {
     console.log("Các ID tác giả:", authorIds);
 
     const response = await axios.get("http://103.77.242.79:3005/api/author/list",{
-      
+
      }
   );
 
