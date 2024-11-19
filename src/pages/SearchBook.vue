@@ -100,11 +100,11 @@ const router = useRouter();
 const formData = ref({
   Title: '',
   author: '',
-  category: '',
+  genre: '',
 });
 
 // Dữ liệu cho các dropdown
-const categoryOptions = ["NTR", "DRAMA", "FANTASY", "LIGHT NOVEL"];
+const categoryOptions = [ "FANTASY", "LIGHT NOVEL"];
 
 // Các label cho input
 const inputLabels = ["Tên sách", "Tác giả", "Thể loại"];
@@ -135,26 +135,87 @@ const itemsA = [
 // Định nghĩa authorMap
 
 // Định nghĩa genreMap (nếu cần)
-const genreMap: { [key: string]: string } = {
-  "1": "Thể loại 1",
-  "2": "Thể loại 2",
-  // Thêm các thể loại khác tại đây
-};
 
 // Khai báo kiểu dữ liệu cho sách
 interface Book {
   title: string;
   published_year: string;
-  author: string;
+  author:string;
   genre: string;
 }
+interface Author {
+  id: string;
+  name: string;
+}
 
-// Lưu trữ kết quả tìm kiếm
+interface Genre {
+  id: string;
+  name: string;
+}
+
+/// Định nghĩa authorMap và genreMap
+const authorMap = ref<{ [key: string]: string }>({});
+const genreMap = ref<{ [key: string]: string }>({});
+
+
+const fetchAuthorsByIds = async (authorIds: string[]): Promise<void> => {
+  try {
+    console.log("Các ID tác giả:", authorIds);
+
+    const response = await axios.get("http://103.77.242.79:3005/api/author/list",{
+      
+     }
+  );
+
+
+    console.log("Yêu cầu API:", response.config);
+    console.log("Dữ liệu trả về:", response.data);
+
+    const authors = response.data;
+    authors.forEach((author: Author) => {
+      authorMap.value[author.id] = author.name;
+    });
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách tác giả:", error);
+  }
+};
+
+// Hàm lấy thông tin thể loại từ các ID
+const fetchGenresByIds = async (genreIds: string[]): Promise<void> => {
+  try {
+    const response = await axios.get("http://103.77.242.79:3005/api/genre/list", {
+      params: {
+        ids: genreIds.join()
+      }
+    });
+    const genres = response.data;
+    genres.forEach((genre: Genre) => {
+      genreMap.value[genre.id] = genre.name;
+    });
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách thể loại:", error);
+  }
+};
+
+
+
+
+
+
+
+
+
 
 // Hàm xử lý submit form
 const handleSubmit = async () => {
+
   try {
-    console.log("Form submitted:", formData.value);
+    console.log("Form submitted:", formData.value);  // Kiểm tra form data
+    console.log("Calling API with params:", {
+      title: formData.value.Title,
+      author: formData.value.author,
+      genre: formData.value.genre
+    });
 
     // Tạo params từ formData để gửi request
     const params = new URLSearchParams();
@@ -167,20 +228,17 @@ const handleSubmit = async () => {
       params.append("author", formData.value.author); // Gửi ID tác giả
     }
 
-    if (formData.value.category) {
-      params.append("category", formData.value.category);
+    if (formData.value.genre) {
+      params.append("category", formData.value.genre);
     }
-
-    // Thêm các tham số cho request
 
     // Gửi request đến API với params
     const response = await axios.get("http://103.77.242.79:3005/api/book", {
       params, // params chứa các tham số như title, page, limit
     });
-    console.log("FormData sau khi nhập:", formData.value);
-    console.log("Kết quả tìm kiếm:", response.data);
 
-    // Cập nhật kết quả tìm kiếm
+    console.log("API response:", response);  // Kiểm tra kết quả từ API
+
     if (response.data?.data?.length > 0) {
       showResults(response.data.data); // Truyền toàn bộ mảng `data` khi có kết quả
     } else {
@@ -195,6 +253,7 @@ const handleSubmit = async () => {
 
 
 
+
 // Hàm cập nhật kết quả tìm kiếm
 const searchResults = ref<Book[]>([]);
 
@@ -202,31 +261,48 @@ const searchResults = ref<Book[]>([]);
 const resultHeaders = [
   { text: "Tên sách", value: "title" },
   { text: "Năm xuất bản", value: "published_year" },
-  { text: "Tác giả", value: "author" },
   { text: "Thể loại", value: "genre" },
 ];
 
 
 // Hàm cập nhật kết quả tìm kiếm
 
-const showResults = (data: any[]) => {
-  if (Array.isArray(data) && data.length > 0) {
-    // Chuyển đổi từng đối tượng trong mảng thành dữ liệu phù hợp
+const showResults = async (data: any[]) => {
+
+  if (!Array.isArray(data) || data.length === 0) {
+    searchResults.value = [];
+    alert("Không tìm thấy kết quả nào hoặc dữ liệu không hợp lệ.");
+    return;
+  }
+
+  // Lấy tất cả author_id và genre_id từ kết quả
+  const allAuthorIds = [...new Set(data.flatMap((item) => item.author_ids || []))];
+  const allGenreIds = [...new Set(data.flatMap((item) => item.genre_ids || []))];
+
+  try {
+    // Gọi API để lấy tên tác giả và thể loại
+    await Promise.all([
+      fetchAuthorsByIds(allAuthorIds),
+      fetchGenresByIds(allGenreIds),
+    ]);
+
+    // Chuyển đổi dữ liệu
     searchResults.value = data.map((item) => ({
       title: item.title || "Chưa có tên",
       published_year: item.published_year
         ? new Date(item.published_year).toLocaleDateString()
         : "Chưa có",
-        genre: item.genre_id
-        ? item.genre_id
-            .map((id: string) => genreMap[id] || "") // Thay thế ID bằng tên
-            .join(", ") // Gộp các thể loại thành chuỗi
+      author: item.author_ids
+        ? item.author_ids.map((id: string) => authorMap.value[id] || "Không rõ").join(", ")
+        : "Không rõ",
+      genre: item.genre_ids
+        ? item.genre_ids.map((id: string) => genreMap.value[id] || "Không rõ").join(", ")
         : "Không rõ",
     }));
-  } else {
-    // Nếu không có dữ liệu
+  } catch (error) {
+    console.error("Lỗi khi xử lý kết quả:", error);
+    alert("Không thể tải thông tin tác giả hoặc thể loại.");
     searchResults.value = [];
-    alert("Không tìm thấy kết quả nào hoặc dữ liệu không hợp lệ.");
   }
 };
 </script>
