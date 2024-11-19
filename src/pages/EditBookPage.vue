@@ -37,15 +37,11 @@
                   :items="categoryOptions"
                 />
               </v-col>
-              <v-col cols="12" md="4" class="pt-1 pb-1">
-                <ComboBox
-                  :label="inputLabels[3]"
-                  v-model="formData.classify"
-                  :items="classifyOptions"
+              <v-col cols="12" md="6" class="pt-1 pb-1">
+                <PublicationYear
+                  label="Năm xuất bản"
+                  v-model="formData.publicationYear"
                 />
-              </v-col>
-              <v-col cols="12" md="4" class="pt-1 pb-1">
-                <PublicationYear />
               </v-col>
             </v-row>
 
@@ -56,12 +52,18 @@
             <v-row>
               <v-col
                 :class="{
-                  'text-center': display.xs,
-                  'text-right': !display.xs,
+                  'text-right':
+                    display.md || display.lg || display.xl || display.xxl,
+                  'text-center':
+                    !display.md && !display.lg && !display.xl && !display.xxl,
                 }"
                 class="mt-8 mt-sm-0"
               >
                 <Button background="green" color="white" text="Xác nhận" />
+                <AlertComponent
+                  v-show="alertVisible"
+                  text="This is a success message!"
+                />
               </v-col>
             </v-row>
           </v-form>
@@ -81,6 +83,7 @@ import ImageChanger from "@/components/AddImageComponent.vue";
 import Button from "@/components/ButtonComponent.vue";
 import ComboBox from "@/components/ComboBoxComponent.vue";
 import { useDisplay } from "vuetify";
+import axios from "axios";
 
 // Sử dụng hook useDisplay để lấy thông tin về các breakpoint
 const display = useDisplay();
@@ -92,16 +95,14 @@ const formData = ref({
   bookTitle: "",
   author: "",
   category: "",
-  classify: "",
   publicationYear: "",
 });
 
 // Dữ liệu cho các dropdown
-const categoryOptions = ["Category 1", "Category 2", "Category 3"];
-const classifyOptions = ["Classify 1", "Classify 2", "Classify 3"];
+const categoryOptions = ["Fantasty", "Tiểu thuyết", "Tài liệu"];
 
 // Các label cho input
-const inputLabels = ["Tên sách", "Tác giả", "Thể loại", "Phân loại"];
+const inputLabels = ["Tên sách", "Tác giả", "Thể loại"];
 const repeatCount = inputLabels.length;
 
 // Các phương thức chuyển trang
@@ -137,9 +138,57 @@ const itemsA = [
   },
 ];
 
-// Hàm xử lý submit
+const ipAddress = import.meta.env.VITE_IP_ADDRESS;
+const port = import.meta.env.VITE_PORT;
+
+const bookId = localStorage.getItem("book_id");
+const accessToken = localStorage.getItem("access_token");
+const alertVisible = ref(false);
+
+if (localStorage.getItem("role") == "READER") {
+  router.push("/login");
+}
+// Hàm xử lý submit form
 const handleSubmit = () => {
-  console.log("Form submitted:", formData.value);
-  // Thực hiện xử lý dữ liệu hoặc gọi API ở đây
+  const url = `http://${ipAddress}:${port}/api/book/${bookId}`;
+  // Lấy ngày hiện tại
+  const currentDate = new Date();
+  const formattedCurrentDate = `${currentDate.getFullYear()}-${String(
+    currentDate.getMonth() + 1
+  ).padStart(2, "0")}-${String(currentDate.getDate()).padStart(2, "0")}`;
+
+  // Kiểm tra và gán lại giá trị cho publicationDate
+  if (new Date(formData.value.publicationYear) > currentDate) {
+    formData.value.publicationYear = formattedCurrentDate;
+  }
+
+  axios
+    .put(
+      url,
+      {
+        title: formData.value.bookTitle,
+        published_year: formData.value.publicationYear,
+        authors: [formData.value.author],
+        genres: [formData.value.category],
+      },
+      {
+        headers: {
+          // Thêm token vào header Authorization
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    )
+    .then((response) => {
+      alertVisible.value = true;
+      // Tự động tắt sau 1,5 giây (nếu cần)
+      setTimeout(() => {
+        alertVisible.value = false;
+      }, 1500);
+      console.log("Success:", response.data);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert("Kiểm tra lại thông tin");
+    });
 };
 </script>

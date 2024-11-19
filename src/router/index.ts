@@ -7,6 +7,7 @@ import ManageBook from "@/pages/ManageBookPage.vue";
 import Alert from "@/components/UIAdminComponent.vue";
 import InfoBook from "@/pages/InfoBook.vue";
 import SearchBook from "@/pages/SearchBook.vue";
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [

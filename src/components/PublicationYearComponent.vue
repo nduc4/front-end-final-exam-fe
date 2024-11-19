@@ -1,31 +1,61 @@
 <template>
   <div class="input-label-container">
-    <label class="input-label">Năm xuất bản</label>
+    <label class="input-label">{{ label }}</label>
   </div>
   <v-date-input
-    label="Date input"
+    :value="modelValue"
+    @update:modelValue="updateModelValue"
+    :rules="computedRules"
     density="compact"
     outlined
     variant="solo-inverted"
-    :rules="computedRules"
-  ></v-date-input>
+  />
 </template>
 
-<script setup lang="ts">
-import { computed } from "vue";
-import { useRoute } from "vue-router";
-const rules = {
-  required: (value: string) => !!value || "Field is required",
-};
-const route = useRoute();
-
-const computedRules = computed(() => {
-  if (route.path === "/editbook") {
-    return [];
-  }
-  return [rules.required];
-});
-</script>
 <script lang="ts">
-export default {};
+import { useRoute } from "vue-router";
+
+// Định nghĩa các props
+export default {
+  props: {
+    label: {
+      type: String,
+      required: true, // Đảm bảo rằng 'label' là bắt buộc
+    },
+    modelValue: {
+      type: String,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      // Rule
+      rules: {
+        required: (value: string) => !!value || "Field is required",
+      },
+    };
+  },
+  emits: ["update:modelValue"], // Định nghĩa sự kiện update:modelValue
+  computed: {
+    computedRules() {
+      const route = useRoute();
+      if (route.path === "/editbook") {
+        return [];
+      }
+      return [this.rules.required];
+    },
+  },
+  methods: {
+    updateModelValue(newValue: string) {
+      // Phát sự kiện để đồng bộ giá trị giữa component cha và con
+      this.$emit("update:modelValue", newValue);
+    },
+  },
+};
 </script>
+
+<style scoped>
+.v-date-input {
+  max-width: 100%;
+}
+</style>

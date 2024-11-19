@@ -155,6 +155,9 @@ const fetchAuthorsByIds = async (authorIds: string[]): Promise<void> => {
     const response = await axios.get("http://103.77.242.79:3005/api/author/list", {
       params,
     });
+    response.data.forEach((author: any) => {
+      authorMap.value[author._id] = { name: author.name };
+    });
     console.log("Danh sách tác giả:", response.data);
   } catch (error) {
     console.error("Lỗi khi gọi API:", error);

@@ -12,28 +12,46 @@
 </template>
 
 <script lang="ts">
-import { ref } from "vue";
 import { useRouter } from "vue-router";
+import axios from "axios";
 
 export default {
   name: "Login",
 
   setup() {
-    const email = ref("");
-    const password = ref("");
     const router = useRouter();
 
-    const login = () => {
-      console.log("Logging in with", email.value, password.value);
+    // Định nghĩa kiểu dữ liệu
+    interface LoginForm {
+      email: string;
+      password: string;
+    }
+
+    // Hàm login
+    const login = ({ email, password }: LoginForm) => {
+      console.log("Logging in with", email, password);
+      const ipAddress = import.meta.env.VITE_IP_ADDRESS;
+      const port = import.meta.env.VITE_PORT;
+      const url = `http://${ipAddress}:${port}/api/user/signin`;
+      axios
+        .post(url, { email, password })
+        .then((response) => {
+          console.log("Login success:", response.data);
+          router.push("/home");
+          localStorage.setItem("access_token", response.data.access_token);
+        })
+        .catch((error) => {
+          console.error("Login error:", error);
+          alert("Sai thông tin đăng nhập");
+        });
     };
 
+    // Chuyển đến trang đăng ký
     const goToRegister = () => {
       router.push("/register");
     };
 
     return {
-      email,
-      password,
       login,
       goToRegister,
     };

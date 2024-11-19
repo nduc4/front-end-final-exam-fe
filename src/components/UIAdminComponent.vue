@@ -3,7 +3,13 @@
     <v-app-bar app>
       <v-toolbar-title>Thư viện Lạc Hồng</v-toolbar-title>
       <v-spacer></v-spacer>
-      <UserCard v-if="showUserCard" />
+      <!-- Truyền dữ liệu vào UserCard -->
+      <UserCard
+        v-if="showUserCard"
+        :userName="userName"
+        :email="email"
+        :avatarUrl="avatarUrl"
+      />
     </v-app-bar>
 
     <v-layout>
@@ -22,7 +28,6 @@
             </v-list-item-avatar>
           </v-list-item>
         </v-list>
-        <!-- <v-divider></v-divider> -->
         <!-- Duyệt qua danh sách items từ props -->
         <v-list density="compact" nav>
           <ItemAdmin
@@ -37,28 +42,23 @@
       </v-navigation-drawer>
 
       <!-- Main content bên phải -->
-      <v-main
-        sytle="background-color: red"
-        class="fill-height"
-        style="min-height: 100vh"
-      >
+      <v-main class="fill-height" style="min-height: 100vh">
         <v-row>
           <v-col cols="12" md="12">
             <!-- Slot cho input fields, sử dụng v-if để ẩn hiện -->
             <slot name="input-fields" v-if="showInputFields"></slot>
           </v-col>
         </v-row>
-        <!-- <div class="mb-12"></div> -->
       </v-main>
     </v-layout>
   </v-card>
 </template>
 
 <script lang="ts">
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import axios from "axios";
 import UserCard from "./UserCardComponent.vue";
 import ItemAdmin from "./ItemAdminComponent.vue";
-import InputField from "./InputComponent.vue";
 
 interface NavItem {
   title: string;
@@ -66,15 +66,13 @@ interface NavItem {
   value: string;
   method: Function;
 }
+
 export default {
   name: "AdminComponent",
-
   components: {
     UserCard,
     ItemAdmin,
-    InputField,
   },
-
   props: {
     showUserCard: {
       type: Boolean,
@@ -93,10 +91,40 @@ export default {
       default: true,
     },
   },
+  setup() {
+    const userName = ref("");
+    const email = ref("");
+    const avatarUrl = ref("https://randomuser.me/api/portraits/women/85.jpg"); // avatar
 
-  data() {
+    const ipAddress = import.meta.env.VITE_IP_ADDRESS;
+    const port = import.meta.env.VITE_PORT;
+    const accessToken = localStorage.getItem("access_token");
+
+    onMounted(() => {
+      // Lấy thông tin người dùng khi trang được mount
+      axios
+        .get(`http://${ipAddress}:${port}/api/user/profile`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+        .then((response) => {
+          // Cập nhật thông tin người dùng
+          userName.value = response.data.fullName;
+          email.value = response.data.email;
+          localStorage.setItem("role", response.data.role);
+        })
+        .catch((error) => {
+          console.log("Lỗi khi gọi API:", error);
+          userName.value = "Sakura";
+          email.value = "sakura@example.com";
+        });
+    });
+
     return {
-      author: ref(""),
+      userName,
+      email,
+      avatarUrl,
     };
   },
 };

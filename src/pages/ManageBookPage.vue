@@ -28,7 +28,10 @@
                 <InputField :label="inputLabels[1]" v-model="formData.publisher" />
               </v-col>
               <v-col cols="12" md="6" class="pt-1 pb-1">
-                <PublicationYearComponent />
+                <PublicationYearComponent
+                  label="Năm xuất bản"
+                  v-model="formData.publicationYear"
+                />
               </v-col>
             </v-row>
 
