@@ -279,6 +279,7 @@ const borrowBook = async (item: Book) => {
     );
 
     if (!availableCopy) {
+      alert("Đã có người mượn");
       console.error("Không tìm thấy bản sao sách nào có trạng thái 'AVAILABLE'.");
       return;
     }
