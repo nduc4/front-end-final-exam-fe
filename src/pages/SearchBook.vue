@@ -192,6 +192,7 @@ const enrichBooksWithAuthorsAndGenres = async (books: any[]) => {
   // Gọi API để lấy thông tin
   await Promise.all([fetchAuthorsByIds(allAuthorIds), fetchGenresByIds(allGenreIds)]);
 
+
   // Làm giàu dữ liệu sách với tên tác giả và thể loại
   books.forEach((book) => {
     book.author = book.author_id
@@ -200,6 +201,10 @@ const enrichBooksWithAuthorsAndGenres = async (books: any[]) => {
     book.genre = book.genre_id
       ?.map((id: string) => genreMap.value[id]?.name || "Không rõ")
       .join(", ");
+      if (book.published_year) {
+      const date = new Date(book.published_year);
+      book.published_year = date.toISOString().split("T")[0];
+    }
   });
 
   console.log("Books after enrichment:", books);
