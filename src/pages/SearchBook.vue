@@ -143,19 +143,9 @@ interface Book {
   author:string;
   genre: string;
 }
-interface Author {
-  id: string;
-  name: string;
-}
 
-interface Genre {
-  id: string;
-  name: string;
-}
 
-/// Định nghĩa authorMap và genreMap
-const authorMap = ref<{ [key: string]: string }>({});
-const genreMap = ref<{ [key: string]: string }>({});
+
 
 
 const fetchAuthorsByIds = async (authorIds: string[]): Promise<void> => {
@@ -174,28 +164,19 @@ const fetchAuthorsByIds = async (authorIds: string[]): Promise<void> => {
 // Hàm lấy thông tin thể loại từ các ID
 const fetchGenresByIds = async (genreIds: string[]): Promise<void> => {
   try {
+    const params = new URLSearchParams();
+    genreIds.forEach(id => params.append("ids", id));
     const response = await axios.get("http://103.77.242.79:3005/api/genre/list", {
-      params: {
-        ids: genreIds.join()
-      }
+      params,
     });
-    const genres = response.data;
-    genres.forEach((genre: Genre) => {
-      genreMap.value[genre.id] = genre.name;
+    response.data.forEach((genre: any) => {
+      genreMap.value[genre._id] = { name: genre.name };
     });
+    console.log("Danh sách thể loại:", response.data);
   } catch (error) {
-    console.error("Lỗi khi lấy danh sách thể loại:", error);
+    console.error("Lỗi khi gọi API:", error);
   }
 };
-
-
-
-
-
-
-
-
-
 
 // Hàm xử lý submit form
 const handleSubmit = async () => {
@@ -220,7 +201,7 @@ const handleSubmit = async () => {
     }
 
     if (formData.value.genre) {
-      params.append("category", formData.value.genre);
+      params.append("genre", formData.value.genre);
     }
 
     // Gửi request đến API với params
@@ -244,6 +225,14 @@ const handleSubmit = async () => {
 
 
 
+const authorMap: { value: { [key: string]: { name: string } } } = {
+  value: {},
+};
+
+const genreMap: { value: { [key: string]: { name: string } } } = {
+  value: {},
+};
+
 
 // Hàm cập nhật kết quả tìm kiếm
 const searchResults = ref<Book[]>([]);
@@ -251,6 +240,7 @@ const searchResults = ref<Book[]>([]);
 // Headers cho bảng hiển thị kết quả
 const resultHeaders = [
   { text: "Tên sách", value: "title" },
+  { text: "tác giả", value: "author" },
   { text: "Năm xuất bản", value: "published_year" },
   { text: "Thể loại", value: "genre" },
 ];
@@ -268,13 +258,13 @@ const showResults = async (data: any[]) => {
 
   // Lấy tất cả author_id và genre_id từ kết quả
   const allAuthorIds = [...new Set(data.flatMap((item) => item.author_id || []))];
-  // const allGenreIds = [...new Set(data.flatMap((item) => item.genre_ids || []))];  
+  const allGenreIds = [...new Set(data.flatMap((item) => item.genre_id || []))];
 
   try {
     // Gọi API để lấy tên tác giả và thể loại
     await Promise.all([
       fetchAuthorsByIds(allAuthorIds),
-      // fetchGenresByIds(allGenreIds),
+      fetchGenresByIds(allGenreIds),
     ]);
 
     // Chuyển đổi dữ liệu
@@ -283,12 +273,20 @@ const showResults = async (data: any[]) => {
       published_year: item.published_year
         ? new Date(item.published_year).toLocaleDateString()
         : "Chưa có",
-      author: item.author_ids
-        ? item.author_ids.map((id: string) => authorMap.value[id] || "Không rõ").join(", ")
-        : "Không rõ",
-      genre: item.genre_ids
-        ? item.genre_ids.map((id: string) => genreMap.value[id] || "Không rõ").join(", ")
-        : "Không rõ",
+
+
+        author: item.author_id && item.author_id.length > 0
+        ? item.author_id
+            .map((id: string) => authorMap.value[id]?.name || "Không rõ") // Lấy tên tác giả từ authorMap
+            .join(", ") // Nối các tên tác giả nếu có nhiều
+        : "Không rõ", // Nếu không có author_id, trả về "Không rõ"
+
+
+        genre: item.genre_id && item.genre_id.length > 0
+        ? item.genre_id
+            .map((id: string) => genreMap.value[id]?.name || "Không rõ") // Lấy tên thể loại từ genreMap
+            .join(", ") // Nối các tên thể loại nếu có nhiều
+        : "Không rõ", // Nếu không có genre_id, trả về "Không rõ"
     }));
   } catch (error) {
     console.error("Lỗi khi xử lý kết quả:", error);
