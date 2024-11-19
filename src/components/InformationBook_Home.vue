@@ -30,18 +30,23 @@ export default defineComponent({
   components: {
     Button,
     AlertComponent,
-  },
+  }, 
   data() {
     return {
       books: [
         {
           id: 1,
-          title: "Đắc nhân tâm",
-          author: "Tác Giả Mẫu",
+          title: "",
+          author: "",
           coverUrl: "https://nxbhcm.com.vn/Image/Biasach/dacnhantam86.jpg",
         },
       ]}
-    }
+    },
+   props: {
+      items: {
+        type: Array as () => Book[],
+        }
+    },
 });
 </script>
 

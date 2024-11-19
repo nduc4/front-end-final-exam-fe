@@ -9,6 +9,10 @@ import InformationBook from "@/components/InformationBook1.vue";
 import BorrowedBooksUsers from "@/pages/BorrowedBooksUsers.vue";
 import BorrowedBooksAdmin from "@/pages/BorrowedBooksAdmin.vue";
 import HomePage from "@/pages/HomePage.vue"
+import book1 from "@/components/InformationBook1.vue"
+import book3 from "@/components/InformationBook3.vue"
+import InformationBook1 from "@/components/InformationBook1.vue";
+import InformationBook3 from "@/components/InformationBook3.vue";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -16,6 +20,16 @@ const router = createRouter({
       path: "/login",
       name: "Login",
       component: LoginPage,
+    },
+    {
+      path: "/book1",
+      name: "book1",
+      component: InformationBook1
+    },
+    {
+      path: "/book3",
+      name: "book3",
+      component: InformationBook3
     },
     {
       path: "/register",
