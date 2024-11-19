@@ -54,17 +54,18 @@
                 class="mt-8 mt-sm-0"
               >
                 <Button
+                  @click="handleClickButton"
                   class="mr-2"
                   background="red"
                   color="white"
                   text="Xóa"
                 />
                 <Button
-                  @click="showAlert"
                   class="ml-2"
                   background="green"
                   color="white"
                   text="Sửa"
+                  @click="() => router.push('/editbook')"
                 />
                 <AlertComponent
                   v-show="alertVisible"
@@ -89,19 +90,41 @@ import Button from "@/components/ButtonComponent.vue";
 import PublicationYearComponent from "@/components/PublicationYearComponent.vue";
 import AlertComponent from "@/components/AlertComponent.vue";
 import { useDisplay } from "vuetify";
+import axios from "axios";
 
 // Sử dụng hook useDisplay để lấy thông tin về các breakpoint
 const display = useDisplay();
 const router = useRouter();
+const ipAddress = import.meta.env.VITE_IP_ADDRESS;
+const port = import.meta.env.VITE_PORT;
 
 const goToAddBook = () => {
   router.push("/addbook");
 };
-const goToEditBook = () => {
-  router.push("/editbook");
+const goToManageBook = () => {
+  router.push("/managebook");
 };
 const goToSearchBook = () => {
   router.push("/searchbook");
+};
+
+// xử lý tìm kiếm lấy ra bookId từ response.data, chuyển thành kiểu string
+// set localStorage - lưu bookId trong localStorage key - value (book_id - bookId)
+
+localStorage.setItem("book_id", "12345678932234578");
+const handleClickButton = () => {
+  const url = `http://${ipAddress}:${port}/api/book/${bookId}`;
+  axios
+    .delete(url)
+    .then((response) => {
+      if (response.status == 201) {
+        showAlert();
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert("Kiểm tra lại thông tin");
+    });
 };
 
 const itemsA = [
@@ -110,7 +133,7 @@ const itemsA = [
     title: "Chỉnh sửa",
     icon: "mdi-pencil",
     value: "edit",
-    method: goToEditBook,
+    method: goToManageBook,
   },
   {
     title: "Tìm kiếm",

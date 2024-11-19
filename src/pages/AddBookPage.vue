@@ -77,12 +77,12 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { useDisplay } from "vuetify";
 import AdminComponent from "@/components/UIAdminComponent.vue";
 import InputField from "@/components/InputComponent.vue";
 import ImageChanger from "@/components/AddImageComponent.vue";
 import Button from "@/components/ButtonComponent.vue";
 import PublicationYearComponent from "@/components/PublicationYearComponent.vue";
-import { useDisplay } from "vuetify";
 import ComboBox from "@/components/ComboBoxComponent.vue";
 import AlertComponent from "@/components/AlertComponent.vue";
 import axios from "axios";
@@ -94,8 +94,8 @@ const router = useRouter();
 const goToAddBook = () => {
   router.push("/addbook");
 };
-const goToEditBook = () => {
-  router.push("/editbook");
+const goToManageBook = () => {
+  router.push("/managebook");
 };
 const goToSearchBook = () => {
   router.push("/searchbook");
@@ -107,7 +107,7 @@ const itemsA = [
     title: "Chỉnh sửa",
     icon: "mdi-pencil",
     value: "edit",
-    method: goToEditBook,
+    method: goToManageBook,
   },
   {
     title: "Tìm kiếm",
