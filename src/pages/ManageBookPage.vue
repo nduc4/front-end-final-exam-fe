@@ -28,16 +28,10 @@
 
             <v-row>
               <v-col cols="12" md="6" class="pt-1 pb-1">
-                <InputField
-                  :label="inputLabels[1]"
-                  v-model="formData.publisher"
-                />
+                <InputField :label="inputLabels[1]" v-model="formData.author" />
               </v-col>
               <v-col cols="12" md="6" class="pt-1 pb-1">
-                <PublicationYearComponent
-                  label="Năm xuất bản"
-                  v-model="formData.publicationYear"
-                />
+                <InputField :label="inputLabels[1]" v-model="formData.genre" />
               </v-col>
             </v-row>
 
@@ -149,8 +143,7 @@ const repeatCount = inputLabels.length;
 const formData = ref({
   bookTitle: "",
   author: "",
-  publisher: "",
-  publicationYear: "",
+  genre: "",
 });
 
 // Hàm xử lý submit form

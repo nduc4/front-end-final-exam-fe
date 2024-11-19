@@ -98,7 +98,7 @@ const goToManageBook = () => {
   router.push("/managebook");
 };
 const goToSearchBook = () => {
-  router.push("/searchbook");
+  router.push("/search");
 };
 
 const itemsA = [

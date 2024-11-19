@@ -67,6 +67,7 @@ export default defineComponent({
     },
   },
 });
+
 </script>
 
 <style scoped>
@@ -90,6 +91,7 @@ export default defineComponent({
   padding: 10px;
   display: flex;
   flex-direction: column;
+
 }
 
 .book-title1 {
@@ -115,5 +117,6 @@ export default defineComponent({
 .v-col {
   padding-left: 10px;
   padding-right: 10px;
+  flex-basis: 1 !important;;
 }
 </style>
