@@ -59,7 +59,7 @@
                 <td>{{ item.published_year }}</td>
                 <td>{{ item.genre }}</td>
                 <td @click="borrowBook(item)">
-                  //NÚT MUỢN SÁCH
+                  <!-- nút mượn sách -->
                   <v-btn color="blue">Mượn</v-btn>
                 </td>
               </tr>
