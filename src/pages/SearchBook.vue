@@ -59,6 +59,7 @@
                 <td>{{ item.published_year }}</td>
                 <td>{{ item.genre }}</td>
                 <td @click="borrowBook(item)">
+                  //NÚT MUỢN SÁCH
                   <v-btn color="blue">Mượn</v-btn>
                 </td>
               </tr>
@@ -91,14 +92,6 @@ interface Book {
 }
 // Dữ liệu tìm kiếm
 const searchResults = ref<Book[]>([]);
-
-// Headers cho bảng
-const resultHeaders = [
-  { text: "Tên sách", value: "title" },
-  { text: "Tác giả", value: "author" },
-  { text: "Năm xuất bản", value: "published_year" },
-  { text: "Thể loại", value: "genre" },
-];
 
 // Dữ liệu form
 const formData = ref({
@@ -206,8 +199,6 @@ const enrichBooksWithAuthorsAndGenres = async (books: any[]) => {
       book.published_year = date.toISOString().split("T")[0];
     }
   });
-
-  console.log("Books after enrichment:", books);
 };
 
 // Hàm gọi API lấy thông tin tác giả
@@ -254,6 +245,7 @@ const fetchGenresByIds = async (genreIds: string[]): Promise<void> => {
   }
 };
 
+//LOGIS MƯỢN SÁCH
 const borrowBook = async (item: Book) => {
   try {
     // Lưu _id của cuốn sách vào localStorage
