@@ -25,7 +25,7 @@
              <!-- comboBox Tháng quý năm -->
             <v-row>
               <v-col cols="12" class="pt-1 pb-1">
-                <ComboBox                 
+                <ComboBox
                   v-model="formData.category"
                   :items="categoryOptions"
                 />
@@ -36,63 +36,63 @@
             <v-row v-if="formData.category === 'Tháng'">
               <v-col v-for="(item, index) in sortedBooks" :key="index" :xs="12" :md="3" class="justify-center align-center pt-1 pb-1">
       <BookHome @click="clickSach(item)" :Bookitems="[item]" />
-              </v-col>            
+              </v-col>
             </v-row>
 
             <!-- Hiển thị sách theo quý -->
             <v-row v-if="formData.category === 'Quý'">
               <v-col v-for="(item, index) in sortedBooksQuarter" :key="index" :xs="12" :md="3" class="justify-center align-center pt-1 pb-1">
                 <BookHome @click="clickSach(item)" :Bookitems="[item]" />
-              </v-col>            
+              </v-col>
             </v-row>
 
             <!-- Hiển thị sách theo năm -->
             <v-row v-if="formData.category === 'Năm'">
               <v-col v-for="(item, index) in sortedBooksYear" :key="index" :xs="12" :md="3" class="justify-center align-center pt-1 pb-1">
                 <BookHome @click="clickSach(item)" :Bookitems="[item]" />
-              </v-col>            
+              </v-col>
             </v-row>
 <!--============================================================header thể loại============================================================-->
             <v-row>
               <v-col :xs="12" :md="2" class="text-center">
                 <h2 style="text-decoration: underline">Thể loại</h2>
               </v-col>
-            </v-row>            
+            </v-row>
 <!--============================================================header Thể loại 1============================================================-->
             <v-row>
               <v-col :xs="12" :md="2" class="text-center">
                 <h3>Fantasy</h3>
               </v-col>
-            </v-row>            
+            </v-row>
 <!--============================================================row sách thể loại 1============================================================-->
             <v-row>
-              <v-col v-for="(item, index) in searchResults.filter(item => item.genre.includes('Fantasy')).slice(0,4)" :key="index" :xs="12" :md="3" class="justify-center align-center pt-1 pb-1">               
+              <v-col v-for="(item, index) in searchResults.filter(item => item.genre.includes('Fantasy')).slice(0,4)" :key="index" :xs="12" :md="3" class="justify-center align-center pt-1 pb-1">
                 <BookHome :Bookitems="[item]" />
-              </v-col>            
+              </v-col>
             </v-row>
 <!--============================================================header Thể loại 2============================================================-->
             <v-row>
               <v-col :xs="12" :md="2" class="text-center">
                 <h3>Novel</h3>
               </v-col>
-            </v-row>           
+            </v-row>
 <!--============================================================row sách thể loại 2============================================================-->
             <v-row>
-              <v-col v-for="(item, index) in searchResults.filter(item => item.genre.includes('Light Novel')).slice(0,4)" :key="index" :xs="12" :md="3" class="justify-center align-center pt-1 pb-1">               
+              <v-col v-for="(item, index) in searchResults.filter(item => item.genre.includes('Light Novel')).slice(0,4)" :key="index" :xs="12" :md="3" class="justify-center align-center pt-1 pb-1">
                 <BookHome :Bookitems="[item]" />
-              </v-col>            
+              </v-col>
             </v-row>
 <!--============================================================header thể loại 3============================================================-->
             <v-row>
               <v-col :xs="12" :md="2" class="text-center">
                 <h3>Adventure</h3>
               </v-col>
-            </v-row>            
+            </v-row>
 <!--============================================================row sách thể loại 3============================================================-->
             <v-row>
-              <v-col v-for="(item, index) in searchResults.filter(item => item.genre.includes('Adventure')).slice(0,4)" :key="index" :xs="12" :md="3" class="justify-center align-center pt-1 pb-1">               
+              <v-col v-for="(item, index) in searchResults.filter(item => item.genre.includes('Adventure')).slice(0,4)" :key="index" :xs="12" :md="3" class="justify-center align-center pt-1 pb-1">
                 <BookHome :Bookitems="[item]" />
-              </v-col>            
+              </v-col>
             </v-row>
           </v-form>
         </v-card>
@@ -118,7 +118,6 @@ interface Book {
   published_year: string;
   genre: string;
 }
-
 interface MQYresult {
   book_id: string;
   title: string;
@@ -136,7 +135,7 @@ const yearSearchResults = ref<MQYresult[]>([]);
 //mảng chứa thông tin sách theo tháng
 const sortedBooks = computed(() => {
   // Lọc các sách từ searchResults theo book_id trong monthSearchResults.slice(0, 4)
-  const filteredBooks = searchResults.value.filter(item => 
+  const filteredBooks = searchResults.value.filter(item =>
     monthSearchResults.value.slice(0, 4).some(month => month.book_id === item._id)
   );
 
@@ -151,7 +150,7 @@ const sortedBooks = computed(() => {
 //mảng chứa thông tin sách theo quý
 const sortedBooksQuarter = computed(() => {
   // Lọc các sách từ searchResults theo book_id trong monthSearchResults.slice(0, 4)
-  const filteredBooks = searchResults.value.filter(item => 
+  const filteredBooks = searchResults.value.filter(item =>
     quarterSearchResults.value.slice(0, 4).some(quarter => quarter.book_id === item._id)
   );
 
@@ -166,7 +165,7 @@ const sortedBooksQuarter = computed(() => {
 //Mảng chứa thông tin sách theo năm
 const sortedBooksYear = computed(() => {
   // Lọc các sách từ searchResults theo book_id trong monthSearchResults.slice(0, 4)
-  const filteredBooks = searchResults.value.filter(item => 
+  const filteredBooks = searchResults.value.filter(item =>
     yearSearchResults.value.slice(0, 4).some(year => year.book_id === item._id)
   );
 
@@ -292,11 +291,9 @@ const enrichBooksWithAuthorsAndGenres = async (books: any[]) => {
 
   console.log("Danh sách author_id:", allAuthorIds);
   console.log("Danh sách genre_id:", allGenreIds);
-  
+
   // Gọi API để lấy thông tin
   await Promise.all([fetchAuthorsByIds(allAuthorIds), fetchGenresByIds(allGenreIds), fetchMonthData(),fetchQuarterData(),fetchYearData()]);
-
-  // Làm giàu dữ liệu sách với tên tác giả và thể loại
   books.forEach((book) => {
     book.author = book.author_id
       ?.map((id: string) => authorMap.value[id]?.name || "Không rõ")
@@ -305,8 +302,6 @@ const enrichBooksWithAuthorsAndGenres = async (books: any[]) => {
       ?.map((id: string) => genreMap.value[id]?.name || "Không rõ")
       .join(", ");
   });
-
-  console.log("Books after enrichment:", books);
 };
 
 // Hàm gọi API lấy thông tin tác giả

@@ -4,7 +4,6 @@ import RegisterPage from "@/pages/RegisterPage.vue";
 import AddBook from "@/pages/AddBookPage.vue";
 import EditBook from "@/pages/EditBookPage.vue";
 import ManageBook from "@/pages/ManageBookT.vue";
-import Alert from "@/components/UIAdminComponent.vue";
 import InfoBook from "@/pages/InfoBook.vue";
 import SearchBook from "@/pages/SearchBook.vue";
 import ManageBookPage from "@/pages/ManageBookPage.vue";
@@ -13,6 +12,10 @@ import InformationBook from "@/components/InformationBook1.vue";
 import BorrowedBooksUsers from "@/pages/BorrowedBooksUsers.vue";
 import BorrowedBooksAdmin from "@/pages/BorrowedBooksAdmin.vue";
 import HomePage from "@/pages/HomePage.vue"
+import book1 from "@/components/InformationBook1.vue"
+import book3 from "@/components/InformationBook3.vue"
+import InformationBook1 from "@/components/InformationBook1.vue";
+import InformationBook3 from "@/components/InformationBook3.vue";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -66,16 +69,6 @@ const router = createRouter({
       component: SearchBook,
     },
     {
-      path: "/infor",
-      name: "InformationBook",
-      component: InfoBook,
-    },
-    {
-      path: "/infor",
-      name: "InformationBook",
-      component: InformationBook,
-    },
-    {
       path: "/borrowedBooksUsers",
       name: "BorrowedBooksUsers",
       component: BorrowedBooksUsers,
@@ -85,7 +78,6 @@ const router = createRouter({
       name: "BorrowedBooksAdmin",
       component: BorrowedBooksAdmin,
     },
-    
   ],
 });
 
