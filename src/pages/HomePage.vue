@@ -33,8 +33,8 @@
             </v-row>
 <!--============================================================row sách hot============================================================-->
             <v-row>
-              <v-col v-for="(item, index) in searchResults" :key="index" :xs="12" :md="3" class="justify-center align-center pt-1 pb-1">
-      <BookHome :Bookitems="[item]" />
+              <v-col v-for="(item, index) in searchResults.slice(0,4)" :key="index" :xs="12" :md="3" class="justify-center align-center pt-1 pb-1">
+      <BookHome @click="clickSach(item)" :Bookitems="[item]" />
               </v-col>            
             </v-row>
 <!--============================================================header thể loại============================================================-->
@@ -51,8 +51,8 @@
             </v-row>            
 <!--============================================================row sách thể loại 1============================================================-->
             <v-row>
-              <v-col v-for="(item, index) in 5" :key="index" :xs="12" :md="2" class="pt-1 pb-1 pr-3" style="width: 100%; height: auto;" >
-      <BookHome :item="item" />
+              <v-col v-for="(item, index) in searchResults.filter(item => item.genre.includes('Fantasy')).slice(0,4)" :key="index" :xs="12" :md="3" class="justify-center align-center pt-1 pb-1">               
+                <BookHome :Bookitems="[item]" />
               </v-col>            
             </v-row>
 <!--============================================================header Thể loại 2============================================================-->
@@ -63,8 +63,8 @@
             </v-row>           
 <!--============================================================row sách thể loại 2============================================================-->
             <v-row>
-              <v-col v-for="(item, index) in 5":key="index" :xs="12" :md="2" class="pt-1 pb-1 pr-3">
-      <BookHome :item="item" />
+              <v-col v-for="(item, index) in searchResults.filter(item => item.genre.includes('Light Novel')).slice(0,4)" :key="index" :xs="12" :md="3" class="justify-center align-center pt-1 pb-1">               
+                <BookHome :Bookitems="[item]" />
               </v-col>            
             </v-row>
 <!--============================================================header thể loại 3============================================================-->
@@ -75,8 +75,8 @@
             </v-row>            
 <!--============================================================row sách thể loại 3============================================================-->
             <v-row>
-              <v-col v-for="(item, index) in 5":key="index" :xs="12" :md="2" class="pt-1 pb-1 pr-3">
-      <BookHome :item="item" />
+              <v-col v-for="(item, index) in searchResults.filter(item => item.genre.includes('Adventure')).slice(0,4)" :key="index" :xs="12" :md="3" class="justify-center align-center pt-1 pb-1">               
+                <BookHome :Bookitems="[item]" />
               </v-col>            
             </v-row>
 <!--============================================================Nút xem thêm============================================================-->        
@@ -115,16 +115,18 @@ interface Book {
   published_year: string;
   genre: string;
 }
+
+interface MQYresult {
+  book_id: string;
+  title: string;
+  count: Number;
+}
 // Dữ liệu tìm kiếm
 const searchResults = ref<Book[]>([]);
-
-// Headers cho bảng
-const resultHeaders = [
-  { text: "Tên sách", value: "title" },
-  { text: "Tác giả", value: "author" },
-  { text: "Năm xuất bản", value: "published_year" },
-  { text: "Thể loại", value: "genre" },
-];
+// Mảng chứa sách theo tháng, quý, năm
+const monthSearchResults = ref<MQYresult[]>([]);
+const quarterSearchResults = ref<MQYresult[]>([]);
+const yearSearchResults = ref<MQYresult[]>([]);
 
 // Khai báo router
 const router = useRouter();
@@ -150,9 +152,7 @@ const goToSearchBook = () => {
 const goToBorrowedBooksUser = () => {
   router.push("/borrowedBooksUsers");
 }
-const showMore = () => {
 
-}
 // Các items cho AdminComponent
 const itemsA = [
   {
@@ -169,13 +169,14 @@ const itemsA = [
   },
 ];
 //Khai báo mảng books
-interface book{
-  id: any;
-  title: string;
-  author: string;
-  imgUrl: string;
-}
-  const books: book[] = [];    
+// interface book{
+//   id: any;
+//   title: string;
+//   author: string;
+//   imgUrl: string;
+// }
+//   const books: book[] = []; 
+
 //lấy dữ liệu từ API
 // async function fetchData() {
 //     const response = await fetch("http://103.77.242.79:3005/api/book?page=1&limit=5");
@@ -197,32 +198,34 @@ interface book{
 //   })
   
 // Hàm xử lý submit
+// Hàm xử lý submit form
+
 const handleSubmit = async () => {
   try {
     console.log("Form submitted:", formData.value); // Kiểm tra form data
-  
+
     // Tạo params từ formData để gửi request
     const params = new URLSearchParams();
-  
+
     if (formData.value.Title) {
       params.append("title", formData.value.Title);
     }
-  
+
     if (formData.value.author) {
       params.append("author", formData.value.author); // Gửi ID tác giả
     }
-  
+
     if (formData.value.genre) {
       params.append("genre", formData.value.genre);
     }
-  
+
     // Gửi request đến API với params
     const response = await axios.get("http://103.77.242.79:3005/api/book", {
       params,
     });
-  
+
     console.log("API response:", response); // Kiểm tra kết quả từ API
-  
+
     if (response.data?.data?.length > 0) {
       // Lấy danh sách dữ liệu
       const books = response.data.data;
@@ -237,26 +240,36 @@ const handleSubmit = async () => {
     alert("Không thể thực hiện tìm kiếm. Vui lòng thử lại.");
   }
 };
-  // Thực hiện xử lý dữ liệu hoặc gọi API ở đây
 
-  //map
-  const authorMap = ref<{ [key: string]: { name: string } }>({});
+// Maps để lưu dữ liệu
+const authorMap = ref<{ [key: string]: { name: string } }>({});
+const genreMap = ref<{ [key: string]: { name: string } }>({});
+
 // Hàm làm giàu thông tin sách với tác giả và thể loại
 const enrichBooksWithAuthorsAndGenres = async (books: any[]) => {
   // Lấy danh sách các ID cần xử lý
   const allAuthorIds = [...new Set(books.flatMap((item) => item.author_id || []))];
+  const allGenreIds = [...new Set(books.flatMap((item) => item.genre_id || []))];
+
   console.log("Danh sách author_id:", allAuthorIds);
+  console.log("Danh sách genre_id:", allGenreIds);
+
   // Gọi API để lấy thông tin
-  await Promise.all([fetchAuthorsByIds(allAuthorIds)]);
+  await Promise.all([fetchAuthorsByIds(allAuthorIds), fetchGenresByIds(allGenreIds)]);
+
   // Làm giàu dữ liệu sách với tên tác giả và thể loại
   books.forEach((book) => {
     book.author = book.author_id
       ?.map((id: string) => authorMap.value[id]?.name || "Không rõ")
       .join(", ");
+    book.genre = book.genre_id
+      ?.map((id: string) => genreMap.value[id]?.name || "Không rõ")
+      .join(", ");
   });
 
   console.log("Books after enrichment:", books);
 };
+
 // Hàm gọi API lấy thông tin tác giả
 const fetchAuthorsByIds = async (authorIds: string[]): Promise<void> => {
   try {
@@ -277,8 +290,43 @@ const fetchAuthorsByIds = async (authorIds: string[]): Promise<void> => {
   } catch (error) {
     console.error("Lỗi khi gọi API:", error);
   }
-  // Gọi handleSubmit tự động khi trang được tải
 };
+
+// Hàm gọi API lấy thông tin thể loại
+const fetchGenresByIds = async (genreIds: string[]): Promise<void> => {
+  try {
+    const uniqueIds = genreIds.filter((id) => !genreMap.value[id]); // Lọc các ID chưa có
+    if (uniqueIds.length === 0) return;
+
+    const params = new URLSearchParams();
+    uniqueIds.forEach((id) => params.append("ids", id));
+
+    const response = await axios.get("http://103.77.242.79:3005/api/genre/list", {
+      params,
+    });
+
+    response.data.forEach((genre: any) => {
+      genreMap.value[genre._id] = { name: genre.name };
+    });
+    console.log("Danh sách thể loại:", response.data);
+  } catch (error) {
+    console.error("Lỗi khi gọi API:", error);
+  }
+};
+
+// Hàm click sach
+const clickSach=(item:Book)=>{
+  if (item && item._id) {
+    console.log("Item: ", item); // In ra item để kiểm tra dữ liệu
+    localStorage.setItem("_id", item._id);  // Lưu _id vào localStorage
+    localStorage.setItem("author", item.author || "");  // Kiểm tra nếu author không có giá trị
+    localStorage.setItem("title", item.title || "");  // Kiểm tra nếu title không có giá trị
+    localStorage.setItem("genre", item.genre || "");  // Kiểm tra nếu genre không có giá trị
+  } else {
+    console.error("Item không hợp lệ hoặc không có _id!");
+  }
+};
+
 onMounted(() => {
       handleSubmit(); // Gọi handleSubmit khi trang được tải
     });
