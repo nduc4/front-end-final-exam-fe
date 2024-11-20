@@ -115,5 +115,6 @@ export default defineComponent({
 .v-col {
   padding-left: 10px;
   padding-right: 10px;
+  flex-basis: 1 !important;;
 }
 </style>

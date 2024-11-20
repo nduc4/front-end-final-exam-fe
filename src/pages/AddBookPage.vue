@@ -33,17 +33,21 @@
             <!-- Tác giả và Nhà xuất bản trên cùng một hàng -->
             <v-row>
               <v-col cols="12" md="6" class="pt-1 pb-1">
-                <InputField
+                <ComboBox
                   :label="inputLabels[2]"
-                  v-model="formData.publisher"
+                  v-model="formData.genres"
+                  :items="categoryOptions"
                 />
               </v-col>
               <v-col cols="12" md="6" class="pt-1 pb-1">
-                <PublicationYearComponent />
+                <PublicationYearComponent
+                  label="Năm xuất bản"
+                  v-model="formData.publicationYear"
+                />
               </v-col>
             </v-row>
             <!-- Đổi hình ảnh -->
-            <ImageChanger :showImageChanger="true" class="mt-4 pt-0 pb-0" />
+            <ImageChanger :showImageChanger="true" class="mt-8 pt-0 pb-0" />
 
             <!-- Nút submit -->
             <v-row>
@@ -57,6 +61,10 @@
                 class="mt-8 mt-sm-0"
               >
                 <Button background="green" color="white" text="Xác nhận" />
+                <AlertComponent
+                  v-show="alertVisible"
+                  text="This is a success message!"
+                />
               </v-col>
             </v-row>
           </v-form>
@@ -69,12 +77,15 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { useDisplay } from "vuetify";
 import AdminComponent from "@/components/UIAdminComponent.vue";
 import InputField from "@/components/InputComponent.vue";
 import ImageChanger from "@/components/AddImageComponent.vue";
 import Button from "@/components/ButtonComponent.vue";
 import PublicationYearComponent from "@/components/PublicationYearComponent.vue";
-import { useDisplay } from "vuetify";
+import ComboBox from "@/components/ComboBoxComponent.vue";
+import AlertComponent from "@/components/AlertComponent.vue";
+import axios from "axios";
 
 // Sử dụng hook useDisplay để lấy thông tin về các breakpoint
 const display = useDisplay();
@@ -83,11 +94,11 @@ const router = useRouter();
 const goToAddBook = () => {
   router.push("/addbook");
 };
-const goToEditBook = () => {
-  router.push("/editbook");
+const goToManageBook = () => {
+  router.push("/managebook");
 };
 const goToSearchBook = () => {
-  router.push("/searchbook");
+  router.push("/search");
 };
 
 const itemsA = [
@@ -96,7 +107,7 @@ const itemsA = [
     title: "Chỉnh sửa",
     icon: "mdi-pencil",
     value: "edit",
-    method: goToEditBook,
+    method: goToManageBook,
   },
   {
     title: "Tìm kiếm",
@@ -105,24 +116,67 @@ const itemsA = [
     method: goToSearchBook,
   },
 ];
-const inputLabels = ["Tên sách", "Tác giả", "Nhà xuất bản"];
+const categoryOptions = ["Fantasty", "Tiểu thuyết", "Tài liệu"];
+const inputLabels = ["Tên sách", "Tác giả", "Thể loại"];
 const repeatCount = inputLabels.length;
+const alertVisible = ref(false);
 
 // Biến chứa dữ liệu form
 const formData = ref({
   bookTitle: "",
   author: "",
-  publisher: "",
+  genres: "",
   publicationYear: "",
 });
 
+const ipAddress = import.meta.env.VITE_IP_ADDRESS;
+const port = import.meta.env.VITE_PORT;
+
+const accessToken = localStorage.getItem("access_token");
+
+const url = `http://${ipAddress}:${port}/api/book`;
+
+const currentDate = new Date();
+const formattedCurrentDate = `${currentDate.getFullYear()}-${String(
+  currentDate.getMonth() + 1
+).padStart(2, "0")}-${String(currentDate.getDate()).padStart(2, "0")}`;
+if (localStorage.getItem("role") == "READER") {
+  router.push("/login");
+}
+
 // Hàm xử lý submit form
 const handleSubmit = () => {
-  console.log("Form submitted:", formData.value);
-  // Thực hiện xử lý dữ liệu hoặc gọi API ở đây
+  // Kiểm tra và gán lại giá trị cho publicationDate
+  if (new Date(formData.value.publicationYear) > currentDate) {
+    formData.value.publicationYear = formattedCurrentDate;
+  }
+  axios
+    .post(
+      url,
+      {
+        title: formData.value.bookTitle,
+        published_year: formData.value.publicationYear,
+        authors: [formData.value.author],
+        genres: [formData.value.genres],
+      },
+      {
+        headers: {
+          // Thêm token vào header Authorization
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    )
+    .then((response) => {
+      alertVisible.value = true;
+      // Tự động tắt sau 1,5 giây (nếu cần)
+      setTimeout(() => {
+        alertVisible.value = false;
+      }, 1500);
+      console.log("Success:", response.data);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert("Kiểm tra lại thông tin");
+    });
 };
 </script>
-<!-- <style>
-@media (min-width: none) {
-}
-</style> -->

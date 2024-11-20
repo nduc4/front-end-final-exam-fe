@@ -14,6 +14,7 @@ declare module 'vue' {
     ComboBoxComponent: typeof import('./src/components/ComboBoxComponent.vue')['default']
     InformationBook_Home: typeof import('./src/components/InformationBook_Home.vue')['default']
     InformationBook1: typeof import('./src/components/InformationBook1.vue')['default']
+    InformationBook2: typeof import('./src/components/InformationBook2.vue')['default']
     InformationBook3: typeof import('./src/components/InformationBook3.vue')['default']
     InputComponent: typeof import('./src/components/InputComponent.vue')['default']
     ItemAdminComponent: typeof import('./src/components/ItemAdminComponent.vue')['default']
