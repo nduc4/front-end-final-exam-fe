@@ -4,11 +4,11 @@
     :showUserCard="true"
     :showInputFields="true"
     :repeatCount="repeatCount"
-    style="position: fixed;"
+    style="position: fixed; background-color: #fff;"
     
   >
-    <template v-slot:input-fields  >
-      <v-responsive class="mx-auto" width="100vw" style="max-height: 80vh; overflow-y: auto; padding: 10px">
+    <template v-slot:input-fields   >
+      <v-responsive class="mx-auto" width="100vw" style="max-height: 100vh; overflow-y: auto; padding: 10px;background-color: #fff">
         <h1>Danh sách được mượn</h1>
           <InformationBook3 style="width: 100%; margin-top: 20px;"/>
           

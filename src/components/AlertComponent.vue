@@ -19,14 +19,14 @@ defineProps({
 
 const visible = ref(false);
 
-const showAlert = () => {
-  visible.value = true;
-};
 
 const onAnimationEnd = () => {
   visible.value = false;
 };
-defineExpose({ showAlert });
+// const showAlert = () => {
+//   visible.value = true;
+// };
+
 
 </script>
 

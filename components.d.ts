@@ -8,7 +8,9 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AddImageComponent: typeof import('./src/components/AddImageComponent.vue')['default']
+    Alert: typeof import('./src/components/Alert.vue')['default']
     AlertComponent: typeof import('./src/components/AlertComponent.vue')['default']
+    Arlet: typeof import('./src/components/Arlet.vue')['default']
     AuthForm: typeof import('./src/components/AuthForm.vue')['default']
     ButtonComponent: typeof import('./src/components/ButtonComponent.vue')['default']
     ComboBoxComponent: typeof import('./src/components/ComboBoxComponent.vue')['default']

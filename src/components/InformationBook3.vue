@@ -3,17 +3,22 @@
     <AlertComponent ref="alert" text="Đã trả thành công!" />
     <div v-for="(book, index) in books" :key="book.id" class="book-details">
       <v-col prepend-icon="mdi-bookmark" md="3" sm="12" class="book-cover">
-        <img :src="book.coverUrl" alt="Book Cover" />
+        <img
+          :src="'https://nxbhcm.com.vn/Image/Biasach/dacnhantam86.jpg'"
+          alt="Book Cover"
+        />
       </v-col>
-      <v-col md="12" sm="12"  class="book-info">
+      <v-col md="12" sm="12" class="book-info">
         <div class="book-title">{{ book.title }}</div>
+        <!-- Hiển thị tiêu đề sách -->
         <div class="book-author">{{ book.author }}</div>
         <div class="book-content">
           <div class="book-user">
-            <h5>Người mượn: {{ book.user }}</h5>
+            <h5>Người mượn: {{ book.user || "Chưa có thông tin" }}</h5>
           </div>
           <div class="book-day">
-            <h5>Hạn trả: {{ book.day }}</h5>
+            <h5>Hạn trả: {{ book.loanDate }}</h5>
+            <!-- Sử dụng loanDate -->
           </div>
         </div>
 
@@ -32,20 +37,34 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import Button from "@/components/ButtonComponent.vue";
-import AlertComponent from "@/components/AlertComponent.vue";
+import AlertComponent from "@/components/Alert.vue";
+import axios from "axios";
 
+interface Author {
+  name: string;
+}
 
 interface Book {
   id: number;
   title: string;
   author: string;
+  authors: Author[];
+  genre: string;
+  genres: Author[];
   coverUrl: string;
   user: string;
   day: string;
   isBorrowed: boolean;
   isBookmarked?: boolean;
+  book_instance_id?: string;
+  loan_date: string;
+  loanDate: string;
+
+  user_id: {
+    fullName: string;
+  }; // Nếu user là một đối tượng
 }
 
 export default defineComponent({
@@ -55,76 +74,117 @@ export default defineComponent({
   },
   data() {
     return {
-      books: [
-        {
-          id: 1,
-          title: "Đắc nhân tâm",
-          author: "Tác Giả Mẫu",
-          coverUrl: "https://nxbhcm.com.vn/Image/Biasach/dacnhantam86.jpg",
-          user: "Nguyễn Văn A",
-          day: "12/12/2024",
-          isBorrowed: false,
-        },
-        {
-          id: 2,
-          title: "Sống như một chiến binh",
-          author: "Tác Giả B",
-          coverUrl: "https://nxbhcm.com.vn/Image/Biasach/dacnhantam86.jpg",
-          user: "Trần Văn B",
-          day: "20/12/2024",
-          isBorrowed: false,
-        },
-        {
-          id: 3,
-          title: "Sống như một chiến binh",
-          author: "Tác Giả C",
-          coverUrl: "https://nxbhcm.com.vn/Image/Biasach/dacnhantam86.jpg",
-          user: "Trần Văn B",
-          day: "20/12/2024",
-          isBorrowed: false,
-        },
-        {
-          id: 4,
-          title: "Sống như một chiến binh",
-          author: "Tác Giả D",
-          coverUrl: "https://nxbhcm.com.vn/Image/Biasach/dacnhantam86.jpg",
-          user: "Trần Văn B",
-          day: "20/12/2024",
-          isBorrowed: false,
-        },
-        {
-          id: 5,
-          title: "Sống như một chiến binh",
-          author: "Tác Giả E",
-          coverUrl: "https://nxbhcm.com.vn/Image/Biasach/dacnhantam86.jpg",
-          user: "Trần Văn B",
-          day: "20/12/2024",
-          isBorrowed: false,
-        },
-        {
-          id: 6,
-          title: "Sống như một chiến binh",
-          author: "Tác Giả B",
-          coverUrl: "https://nxbhcm.com.vn/Image/Biasach/dacnhantam86.jpg",
-          user: "Trần Văn B",
-          day: "20/12/2024",
-          isBorrowed: false,
-        },
-        // ... các cuốn sách khác
-      ],
+      books: [] as Book[],
       showButton: true,
+      alertVisible: false,
     };
   },
   computed: {},
+  mounted() {
+    this.fetchBooks(); // Gọi hàm fetchBooks khi component được khởi tạo
+  },
   methods: {
+    async fetchBooks() {
+      const token = localStorage.getItem("access_token");
+      console.log("Token:", token);
+
+      try {
+        const response = await axios.get(
+          "http://103.77.242.79:3005/api/loan?page=1&limit=10",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        // Tạo một mảng tạm thời để lưu trữ sách đã cập nhật
+        const updatedBooks: Book[] = response.data.data.map((book: any) => {
+          return {
+            ...book,
+            user: book.user_id?.fullName || "Unknown User", // Lấy fullName hoặc "Unknown User" nếu không có
+            loanDate: book.loan_date || "Unknown Date", // Lấy loan_date hoặc "Unknown Date" nếu không có
+          };
+        });
+
+        const bookInstanceIds = updatedBooks
+          .map((book) => book.book_instance_id)
+          .filter((id): id is string => id !== undefined);
+        console.log("Danh sách bookInstanceId:", bookInstanceIds);
+
+        for (const id of bookInstanceIds) {
+          try {
+            const bookResponse = await axios.get(
+              `http://103.77.242.79:3005/api/book-instance/detail/${id}`
+            );
+            const bookData = bookResponse.data;
+
+            // Lấy thông tin title từ book_id
+            const bookTitle = bookData.book_id?.title || "Unknown Title";
+
+            const authors = await Promise.all(
+              bookData.book_id.author_id.map(async (authorId: any) => {
+                const authorResponse = await axios.get(
+                  `http://103.77.242.79:3005/api/author/list?ids=${authorId}`
+                );
+                return authorResponse.data?.[0]?.name || "Unknown Author";
+              })
+            );
+
+            const genres = await Promise.all(
+              bookData.book_id.genre_id.map(async (genreId: any) => {
+                const genreResponse = await axios.get(
+                  `http://103.77.242.79:3005/api/genre/list?ids=${genreId}`
+                );
+                return genreResponse.data?.[0]?.name || "Unknown Genre";
+              })
+            );
+
+            const genreNames = genres.join(", ");
+            const authorNames = authors.join(", ");
+
+            // Tìm cuốn sách cần cập nhật
+            const targetBook = updatedBooks.find(
+              (book) => book.book_instance_id === id
+            );
+            if (targetBook) {
+              // Cập nhật thông tin của sách
+              targetBook.authors = authors;
+              targetBook.genres = genres;
+              targetBook.author = authorNames;
+              targetBook.genre = genreNames;
+
+              // Thêm title từ book_id
+              targetBook.title = bookTitle;
+            }
+          } catch (error) {
+            console.error(`Error fetching data for ID ${id}:`, error);
+          }
+        }
+
+        // Gán mảng đã cập nhật vào this.books
+        this.books = updatedBooks;
+
+        console.log("Dữ liệu sách sau khi cập nhật:", this.books);
+      } catch (error) {
+        console.error("Có lỗi xảy ra khi lấy dữ liệu:", error);
+      }
+    },
+
     borrowBook(book: Book, index: number) {
       book.isBorrowed = !book.isBorrowed; // Thay đổi trạng thái isBorrowed
 
       if (book.isBorrowed) {
         console.log("Đã trả sách: ", book.title);
-        // Hiển thị alert khi sách đã trả
+
+        // Hiển thị alert
+        this.alertVisible = true;
+
+        // Tự động ẩn alert sau 3 giây
         const alert = this.$refs.alert;
-        alert.showAlert(); // Gọi phương thức showAlert trong alert component
+
+        alert.showAlert();
+
         // Xóa cuốn sách khỏi danh sách
         this.books.splice(index, 1); // Xóa cuốn sách tại vị trí index
       }
@@ -144,7 +204,6 @@ export default defineComponent({
   display: flex;
   justify-content: left;
   flex-wrap: wrap;
-  
 }
 
 .book-details {
@@ -155,7 +214,7 @@ export default defineComponent({
   /* width: 100%;
   height: 100%; */
   width: 15em;
-  height: 23em;
+  height: 27em;
   /* border: 1px solid black; */
   margin-top: 20px;
 }
