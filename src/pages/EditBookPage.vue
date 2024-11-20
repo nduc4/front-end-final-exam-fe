@@ -145,7 +145,10 @@ const bookId = localStorage.getItem("book_id");
 const accessToken = localStorage.getItem("access_token");
 const alertVisible = ref(false);
 
-if (localStorage.getItem("role") == "READER") {
+if (
+  localStorage.getItem("role") == "READER" ||
+  localStorage.getItem("access_token") == null
+) {
   router.push("/login");
 }
 // Hàm xử lý submit form

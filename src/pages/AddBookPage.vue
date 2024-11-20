@@ -140,7 +140,11 @@ const currentDate = new Date();
 const formattedCurrentDate = `${currentDate.getFullYear()}-${String(
   currentDate.getMonth() + 1
 ).padStart(2, "0")}-${String(currentDate.getDate()).padStart(2, "0")}`;
-if (localStorage.getItem("role") == "READER") {
+
+if (
+  localStorage.getItem("role") == "READER" ||
+  localStorage.getItem("access_token") == null
+) {
   router.push("/login");
 }
 

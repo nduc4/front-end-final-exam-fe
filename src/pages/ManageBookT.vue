@@ -140,7 +140,12 @@ const itemsA = [
   },
 ];
 
-// Xử lý submit form
+if (
+  localStorage.getItem("role") == "READER" ||
+  localStorage.getItem("access_token") == null
+) {
+  router.push("/login");
+}
 
 // Hàm xử lý submit form
 const handleSubmit = async () => {
