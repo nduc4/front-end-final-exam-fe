@@ -2,37 +2,41 @@
   <v-row class="book-width1">
     <!-- Cột bìa sách -->
     <v-col prepend-icon="mdi-bookmark" md="3" sm="12" class="book-cover1">
-      <img :src="book.coverUrl" alt="Book Cover" />
+      <img
+        :src="'https://nxbhcm.com.vn/Image/Biasach/dacnhantam86.jpg'"
+        alt="Book Cover"
+      />
     </v-col>
     <!-- Cột thông tin sách -->
     <v-col md="3" sm="12" class="book-info1">
       <div class="book-title1">{{ book.title }}</div>
-      <div class="book-author1">{{ book.author }}</div>
+      <div class="book-author1">Tác giả: {{ book.author }}</div>
       <div class="book-details-row1">
-        <h4>{{ book.addedDate }}</h4>
+        <h4>Ngày phát hành: {{ book.publishedYear }}</h4>
       </div>
-      <div class="book-details-row1" style="display: flex; flex-direction: row">
+      <div class="book-details-row1">
         <h4>Thể loại:</h4>
         {{ book.genre }}
       </div>
-      <div class="book-details-row1" style="display: flex; flex-direction: row">
-        <h4>Tình trạng:</h4>
-        {{ book.status }}
+      <div class="book-details-row1">
+        <h4>Tình trạng: Cũ</h4>
       </div>
       <div class="borrow-btn1" v-if="showButton">
         <Button
-          :background="isBorrowed ? 'gray' : 'green'"
-          :color="isBorrowed ? 'white' : 'white'"
-          :text="isBorrowed ? 'Đã mượn' : 'Mượn sách'"
-          :disabled="isBorrowed"
+          :background="book.status === 'LOANED' ? 'gray' : 'green'"
+          :color="book.status === 'LOANED' ? 'white' : 'white'"
+          :text="book.status === 'LOANED' ? 'Đã mượn' : 'Mượn sách'"
+          :disabled="book.status === 'LOANED'"
           @click="borrowBook"
         />
       </div>
     </v-col>
   </v-row>
 </template>
+
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, onMounted } from "vue";
+import axios from "axios";
 import Button from "@/components/ButtonComponent.vue";
 
 export default defineComponent({
@@ -43,28 +47,144 @@ export default defineComponent({
   props: {
     showButton: {
       type: Boolean,
-      default: true, // Giá trị mặc định là `true`, nếu không truyền từ component cha thì nút sẽ hiển thị
+      default: true,
     },
   },
   data() {
     return {
       book: {
-        title: "Đắc nhân tâm",
-        author: "Tác Giả Mẫu",
-        coverUrl: "https://nxbhcm.com.vn/Image/Biasach/dacnhantam86.jpg",
-        addedDate: "01/11/2024",
-        genre: "Học thuật",
-        status: "Cũ",
+        title: "",
+        author: "",
+
+        publishedYear: "",
+        genre: "",
+        status: "",
+        id: "",
       },
-      isBorrowed: false, // Trạng thái ban đầu của sách là chưa mượn
+      isBorrowed: false,
     };
   },
   methods: {
-    borrowBook() {
-      if (!this.isBorrowed) {
-        this.isBorrowed = true; // Nếu chưa mượn thì mượn sách
+    async fetchBookDetails() {
+      const bookInstanceId = localStorage.getItem("_id");
+      console.log(bookInstanceId);
+
+      if (!bookInstanceId) {
+        console.error("Không tìm thấy _id trong localStorage!");
+        return;
+      }
+
+      try {
+        // Gọi API để lấy thông tin sách
+        const bookResponse = await axios.get(
+          `http://103.77.242.79:3005/api/book-instance/${bookInstanceId}`
+        );
+
+        const bookData = bookResponse.data;
+        console.log(bookData);
+
+        // Lấy title, published_year, status
+        this.book.title = bookData[0].book_id?.title || "Không rõ tiêu đề";
+
+        this.book.publishedYear = bookData[0]?.book_id?.published_year
+          ? new Date(bookData[0].book_id.published_year).toLocaleDateString(
+              "vi-VN"
+            )
+          : "N/A";
+
+        this.book.status = bookData[0].status || "N/A";
+        this.book.id = bookData[0]._id || "N/A"; // Lưu _id vào đối tượng book
+
+        // Gọi API lấy thông tin authors
+
+        if (bookData[0]?.book_id?.author_id?.length) {
+          // Ghép các `ids` đúng định dạng
+          const idsQuery = bookData[0].book_id.author_id
+            .map((id: string) => `ids=${id}`)
+            .join("&");
+
+          try {
+            const authorResponse = await axios.get(
+              `http://103.77.242.79:3005/api/author/list?${idsQuery}`
+            );
+
+            const authorNames = authorResponse.data.map(
+              (author: any) => author.name
+            );
+
+            this.book.author = authorNames.join(", ");
+          } catch (error) {
+            console.error("Lỗi khi lấy thông tin tác giả:", error);
+            this.book.author = "Không rõ tác giả";
+          }
+        } else {
+          this.book.author = "Không rõ tác giả";
+        }
+
+        // Gọi API lấy thông tin genres
+        if (bookData[0]?.book_id?.genre_id?.length) {
+          // Ghép các `ids` đúng định dạng
+          const idsQuery = bookData[0].book_id.genre_id
+            .map((id: string) => `ids=${id}`)
+            .join("&");
+
+          try {
+            const genreResponse = await axios.get(
+              `http://103.77.242.79:3005/api/genre/list?${idsQuery}`
+            );
+
+            const genreNames = genreResponse.data.map(
+              (genre: any) => genre.name
+            );
+
+            this.book.genre = genreNames.join(", ");
+          } catch (error) {
+            console.error("Lỗi khi lấy thông tin thể loại:", error);
+            this.book.genre = "Không rõ thể loại";
+          }
+        } else {
+          this.book.genre = "Không rõ thể loại";
+        }
+      } catch (error) {
+        console.error("Lỗi khi gọi API:", error);
       }
     },
+    async borrowBook() {
+      if (this.book.status === "AVAILABLE") {
+        try {
+          // Lấy token từ localStorage
+          const token = localStorage.getItem("access_token");
+          if (!token) {
+            console.error("Không có token xác thực.");
+            return;
+          }
+
+          // Gửi yêu cầu mượn sách bằng cách sử dụng POST request
+          const response = await axios.post(
+            `http://103.77.242.79:3005/api/loan/${this.book.id}`, // Sử dụng dấu backticks để chèn biến
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${token}`, // Thêm token vào header
+              },
+            }
+          );
+
+          // Kiểm tra nếu mượn sách thành công
+          if (response.status === 200 || response.status === 201) {
+            // Thay đổi trạng thái của sách trong giao diện
+            this.book.status = "LOANED";
+          } else {
+            console.error("Có lỗi khi mượn sách");
+          }
+        } catch (error) {
+          console.error("Có lỗi xảy ra khi gửi yêu cầu mượn sách:", error);
+        }
+      }
+    },
+  },
+  mounted() {
+    this.fetchBookDetails();
   },
 });
 </script>
