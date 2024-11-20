@@ -94,18 +94,6 @@
                 <BookHome :Bookitems="[item]" />
               </v-col>            
             </v-row>
-<!--============================================================Nút xem thêm============================================================-->        
-            <!-- <v-row>
-              <v-col class="text-center">
-            
-                <Button
-                  background="green"
-                  color="white"
-                  text="Xem thêm"
-                  @click="addRow"
-                   />
-              </v-col>
-            </v-row> -->
           </v-form>
         </v-card>
       </v-responsive>
@@ -216,6 +204,12 @@ const goToSearchBook = () => {
 const goToBorrowedBooksUser = () => {
   router.push("/borrowedBooksUsers");
 }
+const goToAddBook = () => {
+  router.push("/addbook");
+};
+const goToEditBook = () => {
+  router.push("/editbook");
+};
 
 // Các items cho AdminComponent
 const itemsA = [
@@ -231,38 +225,19 @@ const itemsA = [
     value:"",
     method: goToBorrowedBooksUser,
   },
+  {
+    title: "Thêm sách",
+    icon: "mdi-plus",
+    value: "add",
+    method: goToAddBook,
+  },
+  {
+    title: "Chỉnh sửa",
+    icon: "mdi-pencil",
+    value: "edit",
+    method: goToEditBook,
+  },
 ];
-//Khai báo mảng books
-// interface book{
-//   id: any;
-//   title: string;
-//   author: string;
-//   imgUrl: string;
-// }
-//   const books: book[] = []; 
-
-//lấy dữ liệu từ API
-// async function fetchData() {
-//     const response = await fetch("http://103.77.242.79:3005/api/book?page=1&limit=5");
-//     const data_ = await response.json();
-//     return data_
-//   }
-//   fetchData().then(data_ =>{
-//     // console.log(data_);
-    
-//     for(let i = 0; i<data_.data.length;i++){
-//       console.log(data_.data[i].title);
-//       books[i] = {
-//             id: i,
-//             title: data_.data[i].title,
-//             author: data_.data[i].author_id.join(', '), // Giả sử author_id là một mảng, bạn có thể nối các tác giả thành chuỗi
-//             imgUrl:""       
-//           };
-//     }
-//   })
-  
-// Hàm xử lý submit
-// Hàm xử lý submit form
 
 const handleSubmit = async () => {
   try {
@@ -453,9 +428,4 @@ onMounted(() => {
       handleSubmit(); // Gọi handleSubmit khi trang được tải
     });
 
-// search result
-
-const addRow = () => {
-  
-}
 </script>
