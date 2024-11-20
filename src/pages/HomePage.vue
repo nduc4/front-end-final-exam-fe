@@ -33,7 +33,7 @@
             </v-row>
 <!--============================================================row sách hot============================================================-->
             <v-row>
-              <v-col v-for="(item, index) in searchResults.slice(0,4)" :key="index" :xs="12" :md="3" class="justify-center align-center pt-1 pb-1">
+              <v-col v-for="(item, index) in sortedBooks" :key="index" :xs="12" :md="3" class="justify-center align-center pt-1 pb-1">
       <BookHome @click="clickSach(item)" :Bookitems="[item]" />
               </v-col>            
             </v-row>
@@ -99,7 +99,7 @@
 </template>
 <!--============================================================Script============================================================-->
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import AdminComponent from "@/components/UIAdminComponent.vue";
 import Button from "@/components/ButtonComponent.vue";
@@ -127,6 +127,51 @@ const searchResults = ref<Book[]>([]);
 const monthSearchResults = ref<MQYresult[]>([]);
 const quarterSearchResults = ref<MQYresult[]>([]);
 const yearSearchResults = ref<MQYresult[]>([]);
+
+// Computed property để lọc và sắp xếp sách theo count
+//mảng chứa thông tin sách theo tháng
+const sortedBooks = computed(() => {
+  // Lọc các sách từ searchResults theo book_id trong monthSearchResults.slice(0, 4)
+  const filteredBooks = searchResults.value.filter(item => 
+    monthSearchResults.value.slice(0, 4).some(month => month.book_id === item._id)
+  );
+
+  // Sắp xếp theo count của item trong monthSearchResults (giảm dần)
+  return filteredBooks.sort((a, b) => {
+    const countA = Number(monthSearchResults.value.find(month => month.book_id === a._id)?.count || 0);
+    const countB = Number(monthSearchResults.value.find(month => month.book_id === b._id)?.count || 0);
+    return countB - countA; // Giảm dần
+  });
+});
+
+//mảng chứa thông tin sách theo quý
+const sortedBooksQuarter = computed(() => {
+  // Lọc các sách từ searchResults theo book_id trong monthSearchResults.slice(0, 4)
+  const filteredBooks = searchResults.value.filter(item => 
+    quarterSearchResults.value.slice(0, 4).some(quarter => quarter.book_id === item._id)
+  );
+
+  // Sắp xếp theo count của item trong monthSearchResults (giảm dần)
+  return filteredBooks.sort((a, b) => {
+    const countA = Number(quarterSearchResults.value.find(quarter => quarter.book_id === a._id)?.count || 0);
+    const countB = Number(quarterSearchResults.value.find(quarter => quarter.book_id === b._id)?.count || 0);
+    return countB - countA; // Giảm dần
+  });
+});
+
+const sortedBooksYear = computed(() => {
+  // Lọc các sách từ searchResults theo book_id trong monthSearchResults.slice(0, 4)
+  const filteredBooks = searchResults.value.filter(item => 
+    yearSearchResults.value.slice(0, 4).some(year => year.book_id === item._id)
+  );
+
+  // Sắp xếp theo count của item trong monthSearchResults (giảm dần)
+  return filteredBooks.sort((a, b) => {
+    const countA = Number(yearSearchResults.value.find(year => year.book_id === a._id)?.count || 0);
+    const countB = Number(yearSearchResults.value.find(year => year.book_id === b._id)?.count || 0);
+    return countB - countA; // Giảm dần
+  });
+});
 
 // Khai báo router
 const router = useRouter();
@@ -236,7 +281,7 @@ const handleSubmit = async () => {
       alert("Không tìm thấy kết quả nào.");
     }
   } catch (error) {
-    console.error("Lỗi khi gọi API:", error);
+    console.error("Lỗi khi gọi API submit:", error);
     alert("Không thể thực hiện tìm kiếm. Vui lòng thử lại.");
   }
 };
@@ -253,9 +298,9 @@ const enrichBooksWithAuthorsAndGenres = async (books: any[]) => {
 
   console.log("Danh sách author_id:", allAuthorIds);
   console.log("Danh sách genre_id:", allGenreIds);
-
+  
   // Gọi API để lấy thông tin
-  await Promise.all([fetchAuthorsByIds(allAuthorIds), fetchGenresByIds(allGenreIds)]);
+  await Promise.all([fetchAuthorsByIds(allAuthorIds), fetchGenresByIds(allGenreIds), fetchMonthData(),fetchQuarterData(),fetchYearData()]);
 
   // Làm giàu dữ liệu sách với tên tác giả và thể loại
   books.forEach((book) => {
@@ -288,7 +333,7 @@ const fetchAuthorsByIds = async (authorIds: string[]): Promise<void> => {
     });
     console.log("Danh sách tác giả:", response.data);
   } catch (error) {
-    console.error("Lỗi khi gọi API:", error);
+    console.error("Lỗi khi gọi API tác giả:", error);
   }
 };
 
@@ -310,11 +355,68 @@ const fetchGenresByIds = async (genreIds: string[]): Promise<void> => {
     });
     console.log("Danh sách thể loại:", response.data);
   } catch (error) {
-    console.error("Lỗi khi gọi API:", error);
+    console.error("Lỗi khi gọi API thể loại:", error);
   }
 };
 
-// Hàm click sach
+// Hàm  gọi API lấy thông tin tháng
+const fetchMonthData = async () => {
+  try {
+    const response = await axios.get("http://103.77.242.79:3005/api/statistic/top-borrowed-books?period=month&limit=4");
+
+    // Kiểm tra nếu API trả về dữ liệu hợp lệ
+    if (response.data && Array.isArray(response.data)) {
+      // Giả sử API trả về mảng các đối tượng giống ví dụ bạn đưa ra
+      monthSearchResults.value = response.data;
+    } else {
+      console.log("Dữ liệu không hợp lệ:", response.data);
+      monthSearchResults.value = [];
+    }
+  } catch (error) {
+    console.error("Lỗi khi gọi API tháng:", error);
+    monthSearchResults.value = []; // Nếu có lỗi, gán mảng kết quả về rỗng
+  }
+};
+
+//Hàm gọi API lấy thông tin quý
+const fetchQuarterData = async () => {
+  try {
+    const response = await axios.get("http://103.77.242.79:3005/api/statistic/top-borrowed-books?period=quarter&limit=4");
+
+    // Kiểm tra nếu API trả về dữ liệu hợp lệ
+    if (response.data && Array.isArray(response.data)) {
+      // Giả sử API trả về mảng các đối tượng giống ví dụ bạn đưa ra
+      quarterSearchResults.value = response.data;
+    } else {
+      console.log("Dữ liệu không hợp lệ:", response.data);
+      quarterSearchResults.value = [];
+    }
+  } catch (error) {
+    console.error("Lỗi khi gọi API quý:", error);
+    quarterSearchResults.value = []; // Nếu có lỗi, gán mảng kết quả về rỗng
+  }
+};
+
+//Hàm gọi API lấy thông tin năm
+const fetchYearData = async () => {
+  try {
+    const response = await axios.get("http://103.77.242.79:3005/api/statistic/top-borrowed-books?period=year&limit=4");
+
+    // Kiểm tra nếu API trả về dữ liệu hợp lệ
+    if (response.data && Array.isArray(response.data)) {
+      // Giả sử API trả về mảng các đối tượng giống ví dụ bạn đưa ra
+      yearSearchResults.value = response.data;
+    } else {
+      console.log("Dữ liệu không hợp lệ:", response.data);
+      yearSearchResults.value = [];
+    }
+  } catch (error) {
+    console.error("Lỗi khi gọi API năm:", error);
+    yearSearchResults.value = []; // Nếu có lỗi, gán mảng kết quả về rỗng
+  }
+};
+
+// Hàm click sách
 const clickSach=(item:Book)=>{
   if (item && item._id) {
     console.log("Item: ", item); // In ra item để kiểm tra dữ liệu
@@ -325,11 +427,15 @@ const clickSach=(item:Book)=>{
   } else {
     console.error("Item không hợp lệ hoặc không có _id!");
   }
+  router.push("/infor")
 };
 
 onMounted(() => {
       handleSubmit(); // Gọi handleSubmit khi trang được tải
     });
+
+// search result
+
 const addRow = () => {
   
 }
