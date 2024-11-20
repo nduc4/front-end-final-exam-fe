@@ -19,7 +19,7 @@
         {{ book.genre }}
       </div>
       <div class="book-details-row1">
-        <h4>Tình trạng: Cũ</h4>
+        <h4>Tình trạng:{{book.status}}</h4>
       </div>
       <div class="borrow-btn1" v-if="showButton">
         <Button
