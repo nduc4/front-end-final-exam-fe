@@ -1,6 +1,6 @@
 <template>
   <div class="book-width">
-    <AlertComponent ref="alert" text="Đã trả thành công!" />
+    <Alert ref="alert" text="Đã trả thành công!" />
     <div v-for="(book, index) in books" :key="book.id" class="book-details">
       <v-col prepend-icon="mdi-bookmark" md="3" sm="12" class="book-cover">
         <img
@@ -22,12 +22,12 @@
           </div>
         </div>
 
-        <div class="borrow-btn1" v-if="showButton">
+        <div class="borrow-btn1">
           <Button
-            :background="book.isBorrowed ? 'gray' : '#4BC1D2'"
-            :color="book.isBorrowed ? 'white' : 'white'"
-            :text="book.isBorrowed ? 'Đã trả' : 'Trả sách'"
-            :disabled="book.isBorrowed"
+            :background="book.status === 'RETURNED' ? 'gray' : '#4BC1D2'"
+            :color="book.status === 'RETURNED' ? 'white' : 'white'"
+            :text="book.status === 'RETURNED' ? 'Đã trả' : 'Trả sách'"
+            :disabled="book.status === 'RETURNED'"
             @click="borrowBook(book, index)"
           />
         </div>
@@ -39,7 +39,8 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import Button from "@/components/ButtonComponent.vue";
-import AlertComponent from "@/components/Alert.vue";
+
+import Alert from "@/components/Alert.vue";
 import axios from "axios";
 
 interface Author {
@@ -61,7 +62,7 @@ interface Book {
   book_instance_id?: string;
   loan_date: string;
   loanDate: string;
-
+  status: string;
   user_id: {
     fullName: string;
   }; // Nếu user là một đối tượng
@@ -70,7 +71,7 @@ interface Book {
 export default defineComponent({
   components: {
     Button,
-    AlertComponent,
+    Alert,
   },
   data() {
     return {
@@ -85,108 +86,135 @@ export default defineComponent({
   },
   methods: {
     async fetchBooks() {
-      const token = localStorage.getItem("access_token");
-      console.log("Token:", token);
+  const token = localStorage.getItem("access_token");
+  console.log("Token:", token);
 
+  try {
+    const response = await axios.get(
+      "http://103.77.242.79:3005/api/loan?page=1&limit=100",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    // Tạo một mảng tạm thời để lưu trữ sách đã cập nhật
+    let updatedBooks: Book[] = response.data.data
+      .map((book: any) => {
+        return {
+          ...book,
+          user: book.user_id?.fullName || "Unknown User", // Lấy fullName hoặc "Unknown User" nếu không có
+          loanDate: book.loan_date || "Unknown Date", // Lấy loan_date hoặc "Unknown Date" nếu không có
+          id: book._id, // Lấy _id để sử dụng cho chức năng trả sách
+          status: book.book_instance_status, // Lấy trạng thái sách đã trả hay chưa
+        };
+      })
+      .filter((book) => book.status !== "RETURNED"); // Lọc bỏ sách có trạng thái 'RETURNED'
+
+    const bookInstanceIds = updatedBooks
+      .map((book) => book.book_instance_id)
+      .filter((id): id is string => id !== undefined);
+    console.log("Danh sách bookInstanceId:", bookInstanceIds);
+
+    for (const id of bookInstanceIds) {
       try {
-        const response = await axios.get(
-          "http://103.77.242.79:3005/api/loan?page=1&limit=10",
+        const bookResponse = await axios.get(
+          `http://103.77.242.79:3005/api/book-instance/detail/${id}`
+        );
+        const bookData = bookResponse.data;
+
+        // Lấy thông tin title từ book_id
+        const bookTitle = bookData.book_id?.title || "Unknown Title";
+
+        const authors = await Promise.all(
+          bookData.book_id.author_id.map(async (authorId: any) => {
+            const authorResponse = await axios.get(
+              `http://103.77.242.79:3005/api/author/list?ids=${authorId}`
+            );
+            return authorResponse.data?.[0]?.name || "Unknown Author";
+          })
+        );
+
+        const genres = await Promise.all(
+          bookData.book_id.genre_id.map(async (genreId: any) => {
+            const genreResponse = await axios.get(
+              `http://103.77.242.79:3005/api/genre/list?ids=${genreId}`
+            );
+            return genreResponse.data?.[0]?.name || "Unknown Genre";
+          })
+        );
+
+        const genreNames = genres.join(", ");
+        const authorNames = authors.join(", ");
+
+        // Tìm cuốn sách cần cập nhật
+        const targetBook = updatedBooks.find(
+          (book) => book.book_instance_id === id
+        );
+        if (targetBook) {
+          // Cập nhật thông tin của sách
+          targetBook.authors = authors;
+          targetBook.genres = genres;
+          targetBook.author = authorNames;
+          targetBook.genre = genreNames;
+
+          // Thêm title từ book_id
+          targetBook.title = bookTitle;
+        }
+      } catch (error) {
+        console.error(`Error fetching data for ID ${id}:`, error);
+      }
+    }
+
+    // Gán mảng đã lọc và cập nhật vào this.books
+    this.books = updatedBooks;
+
+    console.log("Dữ liệu sách sau khi cập nhật:", this.books);
+  } catch (error) {
+    console.error("Có lỗi xảy ra khi lấy dữ liệu:", error);
+  }
+},
+
+    async borrowBook(book: Book, index: number) {
+      try {
+        // Lấy _id của bản ghi mượn sách
+        const loanId = book.id;
+        if (!loanId) {
+          console.error("Không tìm thấy loan ID trong dữ liệu sách!");
+          return;
+        }
+
+        // Gọi API trả sách
+        const response = await axios.post(
+          `http://103.77.242.79:3005/api/loan/return/${loanId}`,
+          {},
           {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             },
           }
         );
 
-        // Tạo một mảng tạm thời để lưu trữ sách đã cập nhật
-        const updatedBooks: Book[] = response.data.data.map((book: any) => {
-          return {
-            ...book,
-            user: book.user_id?.fullName || "Unknown User", // Lấy fullName hoặc "Unknown User" nếu không có
-            loanDate: book.loan_date || "Unknown Date", // Lấy loan_date hoặc "Unknown Date" nếu không có
-          };
-        });
+        if (response.status === 200 || response.status === 201) {
+          console.log("Đã trả sách thành công:", book.title);
 
-        const bookInstanceIds = updatedBooks
-          .map((book) => book.book_instance_id)
-          .filter((id): id is string => id !== undefined);
-        console.log("Danh sách bookInstanceId:", bookInstanceIds);
+          // Cập nhật trạng thái sách
+          book.isBorrowed = true;
 
-        for (const id of bookInstanceIds) {
-          try {
-            const bookResponse = await axios.get(
-              `http://103.77.242.79:3005/api/book-instance/detail/${id}`
-            );
-            const bookData = bookResponse.data;
+          // Hiển thị thông báo thành công
+          const alert = this.$refs.alert as any;
+          alert.showAlert();
 
-            // Lấy thông tin title từ book_id
-            const bookTitle = bookData.book_id?.title || "Unknown Title";
-
-            const authors = await Promise.all(
-              bookData.book_id.author_id.map(async (authorId: any) => {
-                const authorResponse = await axios.get(
-                  `http://103.77.242.79:3005/api/author/list?ids=${authorId}`
-                );
-                return authorResponse.data?.[0]?.name || "Unknown Author";
-              })
-            );
-
-            const genres = await Promise.all(
-              bookData.book_id.genre_id.map(async (genreId: any) => {
-                const genreResponse = await axios.get(
-                  `http://103.77.242.79:3005/api/genre/list?ids=${genreId}`
-                );
-                return genreResponse.data?.[0]?.name || "Unknown Genre";
-              })
-            );
-
-            const genreNames = genres.join(", ");
-            const authorNames = authors.join(", ");
-
-            // Tìm cuốn sách cần cập nhật
-            const targetBook = updatedBooks.find(
-              (book) => book.book_instance_id === id
-            );
-            if (targetBook) {
-              // Cập nhật thông tin của sách
-              targetBook.authors = authors;
-              targetBook.genres = genres;
-              targetBook.author = authorNames;
-              targetBook.genre = genreNames;
-
-              // Thêm title từ book_id
-              targetBook.title = bookTitle;
-            }
-          } catch (error) {
-            console.error(`Error fetching data for ID ${id}:`, error);
-          }
+      // Cập nhật trạng thái sách sau khi trả
+      this.books[index].status = "RETURNED";
+          // Có thể xóa sách khỏi danh sách nếu muốn
+          this.books.splice(index, 1); // Xóa sách vừa được trả khỏi danh sách hiển thị
+        } else {
+          console.error("Lỗi khi trả sách:", response.data);
         }
-
-        // Gán mảng đã cập nhật vào this.books
-        this.books = updatedBooks;
-
-        console.log("Dữ liệu sách sau khi cập nhật:", this.books);
       } catch (error) {
-        console.error("Có lỗi xảy ra khi lấy dữ liệu:", error);
-      }
-    },
-
-    borrowBook(book: Book, index: number) {
-      book.isBorrowed = !book.isBorrowed; // Thay đổi trạng thái isBorrowed
-
-      if (book.isBorrowed) {
-        console.log("Đã trả sách: ", book.title);
-
-        // Hiển thị alert
-        this.alertVisible = true;
-
-        // Tự động ẩn alert sau 3 giây
-        const alert = this.$refs.alert;
-
-        alert.showAlert();
-
-        // Xóa cuốn sách khỏi danh sách
-        this.books.splice(index, 1); // Xóa cuốn sách tại vị trí index
+        console.error("Có lỗi xảy ra khi gọi API trả sách:", error);
       }
     },
   },
@@ -265,7 +293,7 @@ export default defineComponent({
   font-size: 1.2rem;
   height: 3em;
   font-weight: bold;
-  background-color: #fff;
+
   color: #666666;
   width: 100%;
   text-align: center;
@@ -275,7 +303,7 @@ export default defineComponent({
   font-size: 1rem;
   margin-top: 5px;
   text-align: center;
-  background-color: #fff;
+ 
   width: 100%;
   color: #666666;
 }

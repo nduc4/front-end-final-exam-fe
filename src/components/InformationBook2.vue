@@ -13,14 +13,14 @@
         <!-- Hiển thị tiêu đề sách -->
         <div class="book-author">{{ book.author }}</div>
         <div class="book-content">
-          
+
           <div class="book-day">
             <h5>Hạn trả: {{ book.loanDate }}</h5>
             <!-- Sử dụng loanDate -->
           </div>
         </div>
 
-        
+
       </v-col>
     </div>
   </div>
@@ -80,7 +80,7 @@ export default defineComponent({
 
       try {
         const response = await axios.get(
-          "http://103.77.242.79:3005/api/loan?page=1&limit=10",
+          "http://103.77.242.79:3005/api/loan?page=1&limit=100",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -255,7 +255,7 @@ export default defineComponent({
   font-size: 1.2rem;
   height: 3em;
   font-weight: bold;
-  background-color: #fff;
+
   color: #666666;
   width: 100%;
   text-align: center;
@@ -265,7 +265,7 @@ export default defineComponent({
   font-size: 1rem;
   margin-top: 5px;
   text-align: center;
-  background-color: #fff;
+
   width: 100%;
   color: #666666;
 }

@@ -7,6 +7,7 @@ import ManageBook from "@/pages/ManageBookPage.vue";
 import Alert from "@/components/UIAdminComponent.vue";
 import BorrowedBooksUsers from "@/pages/BorrowedBooksUsers.vue";
 import BorrowedBooksAdmin from "@/pages/BorrowedBooksAdmin.vue";
+import InformationBook1 from "@/components/InformationBook1.vue";
 
 
 const router = createRouter({
@@ -66,6 +67,12 @@ const router = createRouter({
       name: "BorrowedBooksAdmin",
       component: BorrowedBooksAdmin,
     },
+    {
+      path: "/InformationBook1",
+      name: "InformationBook1",
+      component: InformationBook1,
+    },
+    
   ],
 });
 

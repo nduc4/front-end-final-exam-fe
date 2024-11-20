@@ -8,7 +8,7 @@
     
   >
     <template v-slot:input-fields  >
-      <v-responsive class="mx-auto" width="100vw" style="max-height: 80vh; overflow-y: auto; padding: 10px ">
+      <v-responsive class="mx-auto" width="100vw" style="max-height: 100vh; overflow-y: auto; padding: 10px ;">
         <h1>Sách đã mượn</h1>
           <InformationBook2 style="width: 100%; margin-top: 20px; display: flex; justify-content: center; align-items: center; "/>
           

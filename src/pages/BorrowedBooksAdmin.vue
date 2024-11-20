@@ -8,7 +8,7 @@
     
   >
     <template v-slot:input-fields   >
-      <v-responsive class="mx-auto" width="100vw" style="max-height: 100vh; overflow-y: auto; padding: 10px;background-color: #fff">
+      <v-responsive class="mx-auto" width="100vw" style="max-height: 100vh; overflow-y: auto; padding: 10px;">
         <h1>Danh sách được mượn</h1>
           <InformationBook3 style="width: 100%; margin-top: 20px;"/>
           
