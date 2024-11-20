@@ -125,9 +125,8 @@ const itemsA = [
   },
 ];
 
-// Xử lý submit form
 
-// Hàm xử lý submit form
+// Hàm xử lý submit từ formData
 const handleSubmit = async () => {
   try {
     console.log("Form submitted:", formData.value); // Kiểm tra form data
