@@ -32,9 +32,24 @@
               </v-col>
             </v-row>
 <!--============================================================row sách hot============================================================-->
-            <v-row>
+            <!--Hiển thị sách theo tháng-->
+            <v-row v-if="formData.category === 'Tháng'">
               <v-col v-for="(item, index) in sortedBooks" :key="index" :xs="12" :md="3" class="justify-center align-center pt-1 pb-1">
       <BookHome @click="clickSach(item)" :Bookitems="[item]" />
+              </v-col>            
+            </v-row>
+
+            <!-- Hiển thị sách theo quý -->
+            <v-row v-if="formData.category === 'Quý'">
+              <v-col v-for="(item, index) in sortedBooksQuarter" :key="index" :xs="12" :md="3" class="justify-center align-center pt-1 pb-1">
+                <BookHome @click="clickSach(item)" :Bookitems="[item]" />
+              </v-col>            
+            </v-row>
+
+            <!-- Hiển thị sách theo năm -->
+            <v-row v-if="formData.category === 'Năm'">
+              <v-col v-for="(item, index) in sortedBooksYear" :key="index" :xs="12" :md="3" class="justify-center align-center pt-1 pb-1">
+                <BookHome @click="clickSach(item)" :Bookitems="[item]" />
               </v-col>            
             </v-row>
 <!--============================================================header thể loại============================================================-->
@@ -80,7 +95,7 @@
               </v-col>            
             </v-row>
 <!--============================================================Nút xem thêm============================================================-->        
-            <v-row>
+            <!-- <v-row>
               <v-col class="text-center">
             
                 <Button
@@ -90,7 +105,7 @@
                   @click="addRow"
                    />
               </v-col>
-            </v-row>
+            </v-row> -->
           </v-form>
         </v-card>
       </v-responsive>
@@ -129,6 +144,7 @@ const quarterSearchResults = ref<MQYresult[]>([]);
 const yearSearchResults = ref<MQYresult[]>([]);
 
 // Computed property để lọc và sắp xếp sách theo count
+
 //mảng chứa thông tin sách theo tháng
 const sortedBooks = computed(() => {
   // Lọc các sách từ searchResults theo book_id trong monthSearchResults.slice(0, 4)
@@ -159,6 +175,7 @@ const sortedBooksQuarter = computed(() => {
   });
 });
 
+//Mảng chứa thông tin sách theo năm
 const sortedBooksYear = computed(() => {
   // Lọc các sách từ searchResults theo book_id trong monthSearchResults.slice(0, 4)
   const filteredBooks = searchResults.value.filter(item => 
@@ -172,6 +189,8 @@ const sortedBooksYear = computed(() => {
     return countB - countA; // Giảm dần
   });
 });
+
+
 
 // Khai báo router
 const router = useRouter();
