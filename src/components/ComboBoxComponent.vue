@@ -36,7 +36,7 @@ const rules = {
 const route = useRoute();
 
 const computedRules = computed(() => {
-  if (route.path === "/editbook") {
+  if (route.path === "/editbook" || route.path ==="/search") {
     return [];
   }
   return [rules.required];

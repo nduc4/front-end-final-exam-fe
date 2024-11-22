@@ -25,6 +25,7 @@
               </v-col>
             </v-row>
             <v-row>
+
               <v-col cols="12" md="4" class="pt-1 pb-1">
                 <ComboBox
                   :label="inputLabels[2]"
