@@ -1,5 +1,5 @@
 <template>
-  <v-btn :style="{ color, background }" dark @click="handleClick" type="submit">
+  <v-btn :style="{ color, background }" dark @click="handleClick">
     {{ text }}
   </v-btn>
 </template>
@@ -19,7 +19,9 @@ export default {
     },
   },
   methods: {
-    handleClick() {},
+    handleClick() {
+      console.log("Button clicked");
+    },
   },
 };
 </script>

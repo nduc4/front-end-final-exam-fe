@@ -30,7 +30,7 @@
 
             <!-- Thể loại, Phân loại và Năm xuất bản -->
             <v-row>
-              <v-col cols="12" md="6" class="pt-1 pb-1">
+              <v-col cols="12" md="4" class="pt-1 pb-1">
                 <ComboBox
                   :label="inputLabels[2]"
                   v-model="formData.category"

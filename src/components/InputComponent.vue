@@ -43,7 +43,7 @@ const computedRules = computed(() => {
   if (
     route.path === "/editbook" ||
     route.path === "/managebook" ||
-    route.path === "/searchbook"
+    route.path === "/search"
   ) {
     return [];
   }

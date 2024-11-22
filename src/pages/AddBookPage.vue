@@ -29,7 +29,7 @@
                 <InputField :label="inputLabels[1]" v-model="formData.author" />
               </v-col>
             </v-row>
-
+            
             <!-- Tác giả và Nhà xuất bản trên cùng một hàng -->
             <v-row>
               <v-col cols="12" md="6" class="pt-1 pb-1">

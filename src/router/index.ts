@@ -103,7 +103,7 @@ const router = createRouter({
       name: "InformationBook1",
       component: InformationBook1,
     },
-    
+
   ],
 });
 
