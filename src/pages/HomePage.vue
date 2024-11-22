@@ -67,7 +67,7 @@
 <!--============================================================row sách thể loại 1============================================================-->
             <v-row>
               <v-col v-for="(item, index) in searchResults.filter(item => item.genre.includes('Fantasy')).slice(0,4)" :key="index" :xs="12" :md="3" class="justify-center align-center pt-1 pb-1">
-                <BookHome :Bookitems="[item]" />
+                <BookHome @click="clickSach(item)" :Bookitems="[item]" />
               </v-col>
             </v-row>
 <!--============================================================header Thể loại 2============================================================-->
@@ -79,7 +79,7 @@
 <!--============================================================row sách thể loại 2============================================================-->
             <v-row>
               <v-col v-for="(item, index) in searchResults.filter(item => item.genre.includes('Light Novel')).slice(0,4)" :key="index" :xs="12" :md="3" class="justify-center align-center pt-1 pb-1">
-                <BookHome :Bookitems="[item]" />
+                <BookHome @click="clickSach(item)" :Bookitems="[item]" />
               </v-col>
             </v-row>
 <!--============================================================header thể loại 3============================================================-->
@@ -91,7 +91,7 @@
 <!--============================================================row sách thể loại 3============================================================-->
             <v-row>
               <v-col v-for="(item, index) in searchResults.filter(item => item.genre.includes('Adventure')).slice(0,4)" :key="index" :xs="12" :md="3" class="justify-center align-center pt-1 pb-1">
-                <BookHome :Bookitems="[item]" />
+                <BookHome @click="clickSach(item)" :Bookitems="[item]" />
               </v-col>
             </v-row>
 <!--============================================================row sách all============================================================-->
@@ -102,7 +102,7 @@
             </v-row>
             <v-row>
               <v-col v-for="(item, index) in searchResults" :key="index" :xs="12" :md="3" class="justify-center align-center pt-1 pb-1">
-                <BookHome :Bookitems="[item]" />
+                <BookHome @click="clickSach(item)" :Bookitems="[item]" />
               </v-col>
             </v-row>
           </v-form>
@@ -220,6 +220,9 @@ const goToAddBook = () => {
 const goToEditBook = () => {
   router.push("/editbook");
 };
+const goToBorrowedBooksAdmin = () => {
+  router.push("/borrowedBooksAdmin");
+}
 
 // Các items cho AdminComponent
 const itemsA = [
@@ -230,7 +233,7 @@ const itemsA = [
     method: goToSearchBook,
   },
   {
-    title: "Danh sách mượn",
+    title: "Danh sách mượn (user)",
     icon: "mdi-bookmark",
     value:"",
     method: goToBorrowedBooksUser,
@@ -246,6 +249,12 @@ const itemsA = [
     icon: "mdi-pencil",
     value: "edit",
     method: goToEditBook,
+  },
+  {
+    title: "Danh sách mượn (admin)",
+    icon: "mdi-format-list-bulleted-square",
+    value: "",
+    method: goToBorrowedBooksAdmin,
   },
 ];
 
