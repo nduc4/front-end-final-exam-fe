@@ -12,6 +12,7 @@ import InformationBook from "@/components/InformationBook1.vue";
 import BorrowedBooksUsers from "@/pages/BorrowedBooksUsers.vue";
 import BorrowedBooksAdmin from "@/pages/BorrowedBooksAdmin.vue";
 import HomePage from "@/pages/HomePage.vue"
+import Alert from "@/components/Alert.vue";
 import book1 from "@/components/InformationBook1.vue"
 import book3 from "@/components/InformationBook3.vue"
 import InformationBook1 from "@/components/InformationBook1.vue";
