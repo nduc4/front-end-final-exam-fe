@@ -94,6 +94,17 @@
                 <BookHome :Bookitems="[item]" />
               </v-col>
             </v-row>
+<!--============================================================row sách all============================================================-->
+            <v-row>
+              <v-col :xs="12" :md="2" class="text-center">
+                <h3>Toàn bộ sách</h3>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col v-for="(item, index) in searchResults" :key="index" :xs="12" :md="3" class="justify-center align-center pt-1 pb-1">
+                <BookHome :Bookitems="[item]" />
+              </v-col>
+            </v-row>
           </v-form>
         </v-card>
       </v-responsive>
