@@ -54,19 +54,11 @@
             </thead>
             <tbody>
               <tr v-for="(item, index) in searchResults" :key="index">
-<<<<<<< HEAD
                 <td>{{ item.title }}</td>
-=======
-                <td @click="clickSach">{{ item.title }}</td>
->>>>>>> Long
                 <td>{{ item.author }}</td>
                 <td>{{ item.published_year }}</td>
                 <td>{{ item.genre }}</td>
                 <td @click="borrowBook(item)">
-<<<<<<< HEAD
-=======
-                  <!-- nút mượn sách -->
->>>>>>> Long
                   <v-btn color="blue">Mượn</v-btn>
                 </td>
               </tr>
@@ -99,14 +91,6 @@ interface Book {
 }
 // Dữ liệu tìm kiếm
 const searchResults = ref<Book[]>([]);
-
-// Headers cho bảng
-const resultHeaders = [
-  { text: "Tên sách", value: "title" },
-  { text: "Tác giả", value: "author" },
-  { text: "Năm xuất bản", value: "published_year" },
-  { text: "Thể loại", value: "genre" },
-];
 
 // Dữ liệu form
 const formData = ref({
@@ -187,8 +171,6 @@ const handleSubmit = async () => {
 // Maps để lưu dữ liệu
 const authorMap = ref<{ [key: string]: { name: string } }>({});
 const genreMap = ref<{ [key: string]: { name: string } }>({});
-<<<<<<< HEAD
-=======
 
 // Hàm làm giàu thông tin sách với tác giả và thể loại
 const enrichBooksWithAuthorsAndGenres = async (books: any[]) => {
@@ -201,23 +183,7 @@ const enrichBooksWithAuthorsAndGenres = async (books: any[]) => {
 
   // Gọi API để lấy thông tin
   await Promise.all([fetchAuthorsByIds(allAuthorIds), fetchGenresByIds(allGenreIds)]);
->>>>>>> Long
 
-// Hàm làm giàu thông tin sách với tác giả và thể loại
-const enrichBooksWithAuthorsAndGenres = async (books: any[]) => {
-  // Lấy danh sách các ID cần xử lý
-  const allAuthorIds = [...new Set(books.flatMap((item) => item.author_id || []))];
-  const allGenreIds = [...new Set(books.flatMap((item) => item.genre_id || []))];
-
-<<<<<<< HEAD
-  console.log("Danh sách author_id:", allAuthorIds);
-  console.log("Danh sách genre_id:", allGenreIds);
-
-  // Gọi API để lấy thông tin
-  await Promise.all([fetchAuthorsByIds(allAuthorIds), fetchGenresByIds(allGenreIds)]);
-
-=======
->>>>>>> Long
   // Làm giàu dữ liệu sách với tên tác giả và thể loại
   books.forEach((book) => {
     book.author = book.author_id
@@ -226,17 +192,11 @@ const enrichBooksWithAuthorsAndGenres = async (books: any[]) => {
     book.genre = book.genre_id
       ?.map((id: string) => genreMap.value[id]?.name || "Không rõ")
       .join(", ");
-<<<<<<< HEAD
-  });
-
-  console.log("Books after enrichment:", books);
-=======
       if (book.published_year) {
       const date = new Date(book.published_year);
       book.published_year = date.toISOString().split("T")[0];
     }
   });
->>>>>>> Long
 };
 
 // Hàm gọi API lấy thông tin tác giả
@@ -258,7 +218,6 @@ const fetchAuthorsByIds = async (authorIds: string[]): Promise<void> => {
     console.log("Danh sách tác giả:", response.data);
   } catch (error) {
     console.error("Lỗi khi gọi API:", error);
-<<<<<<< HEAD
   }
 };
 
@@ -340,8 +299,6 @@ const borrowBook = async (item: Book) => {
     } else {
       console.error("Lỗi khác:", error.message);
     }
-=======
->>>>>>> Long
   }
 };
 

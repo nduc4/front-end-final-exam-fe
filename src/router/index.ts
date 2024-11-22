@@ -7,16 +7,9 @@ import ManageBook from "@/pages/ManageBookT.vue";
 import InfoBook from "@/pages/InfoBook.vue";
 import SearchBook from "@/pages/SearchBook.vue";
 import ManageBookPage from "@/pages/ManageBookPage.vue";
-import Button from "@/components/ButtonComponent.vue";
-import InformationBook from "@/components/InformationBook1.vue";
 import BorrowedBooksUsers from "@/pages/BorrowedBooksUsers.vue";
 import BorrowedBooksAdmin from "@/pages/BorrowedBooksAdmin.vue";
 import HomePage from "@/pages/HomePage.vue"
-import Alert from "@/components/Alert.vue";
-import book1 from "@/components/InformationBook1.vue"
-import book3 from "@/components/InformationBook3.vue"
-import InformationBook1 from "@/components/InformationBook1.vue";
-import InformationBook3 from "@/components/InformationBook3.vue";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -29,14 +22,6 @@ const router = createRouter({
       path: "/register",
       name: "Register",
       component: RegisterPage,
-    },
-    {
-      path: "/",
-      redirect: "/home",
-    },
-    {
-      path: "",
-      redirect: "/home",
     },
     {
       path: "/home",
@@ -83,27 +68,6 @@ const router = createRouter({
       name: "BorrowedBooksAdmin",
       component: BorrowedBooksAdmin,
     },
-    // {
-    //   path: "/infor",
-    //   name: "InformationBook",
-    //   component: InformationBook,
-    // },
-    {
-      path: "/borrowedBooksUsers",
-      name: "BorrowedBooksUsers",
-      component: BorrowedBooksUsers,
-    },
-    {
-      path: "/BorrowedBooksAdmin",
-      name: "BorrowedBooksAdmin",
-      component: BorrowedBooksAdmin,
-    },
-    {
-      path: "/InformationBook1",
-      name: "InformationBook1",
-      component: InformationBook1,
-    },
-
   ],
 });
 
