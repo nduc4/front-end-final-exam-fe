@@ -19,12 +19,13 @@ defineProps({
 
 const visible = ref(false);
 
-const onAnimationEnd = () => {
-  visible.value = false;
-};
 // const showAlert = () => {
 //   visible.value = true;
 // };
+
+const onAnimationEnd = () => {
+  visible.value = false;
+};
 </script>
 
 <style scoped>

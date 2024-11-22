@@ -82,6 +82,27 @@ const router = createRouter({
       name: "BorrowedBooksAdmin",
       component: BorrowedBooksAdmin,
     },
+    // {
+    //   path: "/infor",
+    //   name: "InformationBook",
+    //   component: InformationBook,
+    // },
+    {
+      path: "/borrowedBooksUsers",
+      name: "BorrowedBooksUsers",
+      component: BorrowedBooksUsers,
+    },
+    {
+      path: "/BorrowedBooksAdmin",
+      name: "BorrowedBooksAdmin",
+      component: BorrowedBooksAdmin,
+    },
+    {
+      path: "/InformationBook1",
+      name: "InformationBook1",
+      component: InformationBook1,
+    },
+    
   ],
 });
 
