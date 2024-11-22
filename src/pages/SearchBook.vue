@@ -55,7 +55,7 @@
             </thead>
             <tbody>
               <tr v-for="(item, index) in searchResults" :key="index">
-                <td>{{ item.title }}</td>
+                <td @click="clickSach">{{ item.title }}</td>
                 <td>{{ item.author }}</td>
                 <td>{{ item.published_year }}</td>
                 <td>{{ item.genre }}</td>
@@ -125,7 +125,6 @@ const itemsA = [
     method: () => router.push("/editbook"),
   },
 ];
-
 
 // Hàm xử lý submit từ formData
 const handleSubmit = async () => {
@@ -293,7 +292,7 @@ const borrowBook = async (item: Book) => {
     },
   }
 );
-
+    alert("Mượn sách thành công");
     console.log("Mượn sách thành công:", postResponse.data);
   } catch (error: any) {
     // Xử lý lỗi nếu có
@@ -303,6 +302,19 @@ const borrowBook = async (item: Book) => {
       console.error("Lỗi khác:", error.message);
     }
   }
+  // Hàm click sách
+};
+const clickSach=(item:Book)=>{
+  if (item && item._id) {
+    console.log("Item: ", item); // In ra item để kiểm tra dữ liệu
+    localStorage.setItem("_id", item._id);  // Lưu _id vào localStorage
+    localStorage.setItem("author", item.author || "");  // Kiểm tra nếu author không có giá trị
+    localStorage.setItem("title", item.title || "");  // Kiểm tra nếu title không có giá trị
+    localStorage.setItem("genre", item.genre || "");  // Kiểm tra nếu genre không có giá trị
+  } else {
+    console.error("Item không hợp lệ hoặc không có _id!");
+  }
+  router.push("/infor")
 };
 </script>
 <style scoped>
@@ -314,4 +326,5 @@ const borrowBook = async (item: Book) => {
 .actions-cell .v-icon {
   cursor: pointer;
 }
+
 </style>
