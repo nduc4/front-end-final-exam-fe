@@ -153,45 +153,67 @@ if (
 }
 // Hàm xử lý submit form
 const handleSubmit = () => {
+  // URL API
   const url = `http://${ipAddress}:${port}/api/book/${bookId}`;
+
   // Lấy ngày hiện tại
   const currentDate = new Date();
   const formattedCurrentDate = `${currentDate.getFullYear()}-${String(
     currentDate.getMonth() + 1
   ).padStart(2, "0")}-${String(currentDate.getDate()).padStart(2, "0")}`;
 
-  // Kiểm tra và gán lại giá trị cho publicationDate
-  if (new Date(formData.value.publicationYear) > currentDate) {
+  // Kiểm tra và gán lại giá trị cho publicationYear nếu ngày không hợp lệ
+  if (
+    formData.value.publicationYear &&
+    new Date(formData.value.publicationYear) > currentDate
+  ) {
     formData.value.publicationYear = formattedCurrentDate;
   }
 
+  // Tạo payload động
+  const payload: Record<string, any> = {};
+
+  // Thêm các trường động vào payload
+  if (formData.value.bookTitle) {
+    payload.title = formData.value.bookTitle;
+  }
+  if (formData.value.publicationYear) {
+    payload.published_year = formData.value.publicationYear;
+  }
+  if (formData.value.author) {
+    payload.authors = [formData.value.author];
+  }
+  if (formData.value.category) {
+    payload.genres = [formData.value.category];
+  }
+
+  // Gửi request đến API với payload
   axios
-    .put(
-      url,
-      {
-        title: formData.value.bookTitle,
-        published_year: formData.value.publicationYear,
-        authors: [formData.value.author],
-        genres: [formData.value.category],
+    .put(url, payload, {
+      headers: {
+        // Thêm token vào header Authorization
+        Authorization: `Bearer ${accessToken}`,
       },
-      {
-        headers: {
-          // Thêm token vào header Authorization
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    )
+    })
     .then((response) => {
       alertVisible.value = true;
-      // Tự động tắt sau 1,5 giây (nếu cần)
+      console.log(`StatusCode: ${response.status}`); // Hiển thị mã trạng thái
+      console.log("Cập nhật thành công:", response.data);
+
+      // Tự động tắt thông báo sau 1,5 giây
       setTimeout(() => {
         alertVisible.value = false;
       }, 1500);
-      console.log("Success:", response.data);
     })
     .catch((error) => {
-      console.error("Error:", error);
-      alert("Kiểm tra lại thông tin");
+      console.error("Lỗi khi cập nhật:", error);
+
+      // Xử lý lỗi và hiển thị thông báo
+      alert(
+        `Cập nhật không thành công. Kiểm tra lại thông tin. ${
+          error.response ? `StatusCode: ${error.response.status}` : ""
+        }`
+      );
     });
 };
 </script>

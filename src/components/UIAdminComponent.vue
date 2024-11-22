@@ -10,6 +10,7 @@
         :email="email"
         :avatarUrl="avatarUrl"
       />
+      <v-icon class="ml-2 mr-4" @click="handleLogout">mdi-logout</v-icon>
     </v-app-bar>
 
     <v-layout>
@@ -89,6 +90,12 @@ export default {
     showInputFields: {
       type: Boolean,
       default: true,
+    },
+  },
+  methods: {
+    handleLogout() {
+      localStorage.clear();
+      window.location.href = "/login";
     },
   },
   setup() {
