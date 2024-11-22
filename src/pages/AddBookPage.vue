@@ -29,7 +29,7 @@
                 <InputField :label="inputLabels[1]" v-model="formData.author" />
               </v-col>
             </v-row>
-            
+
             <!-- Tác giả và Nhà xuất bản trên cùng một hàng -->
             <v-row>
               <v-col cols="12" md="6" class="pt-1 pb-1">
@@ -60,7 +60,7 @@
                 }"
                 class="mt-8 mt-sm-0"
               >
-                <Button background="green" color="white" text="Xác nhận" />
+                <Button @click="handleSubmit" background="green" color="white" text="Xác nhận" />
                 <AlertComponent
                   v-show="alertVisible"
                   text="This is a success message!"
@@ -91,23 +91,33 @@ import axios from "axios";
 const display = useDisplay();
 const router = useRouter();
 
-const goToAddBook = () => {
-  router.push("/addbook");
-};
-const goToManageBook = () => {
-  router.push("/managebook");
-};
 const goToSearchBook = () => {
   router.push("/search");
 };
+const goToBorrowedBooksUser = () => {
+  router.push("/borrowedBooksUsers");
+}
+const goToAddBook = () => {
+  router.push("/addbook");
+};
+const goToEditBook = () => {
+  router.push("/managebook");
+};
+const goToHome = () => {
+  router.push("/home");
+};
 
-const itemsA = [
-  { title: "Thêm sách", icon: "mdi-plus", value: "add", method: goToAddBook },
+let itemsA: Array<{ title: string; icon: string; value: string; method: Function }> = [];
+if (
+  localStorage.getItem("role") == "ADMIN" ||
+  localStorage.getItem("access_token") == null
+) {
+ itemsA = [
   {
-    title: "Chỉnh sửa",
-    icon: "mdi-pencil",
-    value: "edit",
-    method: goToManageBook,
+    title: "Trang chủ",
+    icon: "mdi-radiobox-blank",
+    value: "home",
+    method: goToHome,
   },
   {
     title: "Tìm kiếm",
@@ -115,7 +125,46 @@ const itemsA = [
     value: "search",
     method: goToSearchBook,
   },
+  {
+    title: "Danh sách mượn",
+    icon: "mdi-bookmark",
+    value:"",
+    method: goToBorrowedBooksUser,
+  },
+  {
+    title: "Thêm sách",
+    icon: "mdi-plus",
+    value: "add",
+    method: goToAddBook,
+  },
+  {
+    title: "Chỉnh sửa",
+    icon: "mdi-pencil",
+    value: "edit",
+    method: goToEditBook,
+  },
 ];
+}else {itemsA = [
+  {
+    title: "Trang chủ",
+    icon: "mdi-radiobox-blank",
+    value: "home",
+    method: goToHome,
+  },
+  {
+    title: "Tìm kiếm",
+    icon: "mdi-magnify",
+    value: "search",
+    method: goToSearchBook,
+  },
+  {
+    title: "Danh sách mượn",
+    icon: "mdi-bookmark",
+    value:"",
+    method: goToBorrowedBooksUser,
+  },
+];
+}
 const categoryOptions = ["Fantasty", "Tiểu thuyết", "Tài liệu"];
 const inputLabels = ["Tên sách", "Tác giả", "Thể loại"];
 const repeatCount = inputLabels.length;

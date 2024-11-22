@@ -6,7 +6,6 @@ import EditBook from "@/pages/EditBookPage.vue";
 import ManageBook from "@/pages/ManageBookT.vue";
 import InfoBook from "@/pages/InfoBook.vue";
 import SearchBook from "@/pages/SearchBook.vue";
-import ManageBookPage from "@/pages/ManageBookPage.vue";
 import BorrowedBooksUsers from "@/pages/BorrowedBooksUsers.vue";
 import BorrowedBooksAdmin from "@/pages/BorrowedBooksAdmin.vue";
 import HomePage from "@/pages/HomePage.vue"
@@ -42,11 +41,6 @@ const router = createRouter({
       path: "/managebook",
       name: "ManageBook",
       component: ManageBook,
-    },
-    {
-      path: "/managebookpage",
-      name: "ManageBook",
-      component: ManageBookPage,
     },
     {
       path: "/infor",

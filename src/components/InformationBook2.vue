@@ -31,7 +31,6 @@ import { defineComponent, ref } from "vue";
 import Button from "@/components/ButtonComponent.vue";
 import AlertComponent from "@/components/Alert.vue";
 import axios from "axios";
-
 interface Author {
   name: string;
 }

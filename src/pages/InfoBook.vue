@@ -59,31 +59,63 @@ const formData = ref({
   publicationYear: "",
 });
 
-// Dữ liệu cho các dropdown
-const categoryOptions = ["NTR", "DRAMA", "FANTASY","LIGHT NOVEL", "TÀI LIỆU"];
 
-// Các label cho input
-const inputLabels = ["Tên sách", "Tác giả", "Thể loại"];
-const repeatCount = inputLabels.length;
 
 // Các phương thức chuyển trang
+const goToSearchBook = () => {
+  router.push("/search");
+};
+const goToBorrowedBooksUser = () => {
+  router.push("/borrowedBooksUsers");
+}
 const goToAddBook = () => {
   router.push("/addbook");
 };
 const goToEditBook = () => {
-  router.push("/editbook");
+  router.push("/managebook");
 };
-const goToSearchBook = () => {
-  router.push("/searchbook");
+const goToHome = () => {
+  router.push("/home");
 };
-
 // Các items cho AdminComponent
-const itemsA = [
+let itemsA: Array<{ title: string; icon: string; value: string; method: Function }> = [];
+if (
+  localStorage.getItem("role") == "READER" ||
+  localStorage.getItem("access_token") == null
+) {
+// Các items cho AdminComponent
+ itemsA = [
+  {
+    title: "Trang chủ",
+    icon: "mdi-radiobox-blank",
+    value: "home",
+    method: goToHome,
+  },
   {
     title: "Tìm kiếm",
     icon: "mdi-magnify",
     value: "search",
     method: goToSearchBook,
+  },
+];
+}else itemsA = [
+  {
+    title: "Trang chủ",
+    icon: "mdi-radiobox-blank",
+    value: "home",
+    method: goToHome,
+  },
+  {
+    title: "Tìm kiếm",
+    icon: "mdi-magnify",
+    value: "search",
+    method: goToSearchBook,
+  },
+  {
+    title: "Danh sách mượn",
+    icon: "mdi-bookmark",
+    value:"",
+    method: goToBorrowedBooksUser,
   },
   {
     title: "Thêm sách",

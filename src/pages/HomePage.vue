@@ -79,7 +79,7 @@
 <!--============================================================row sách thể loại 2============================================================-->
             <v-row>
               <v-col v-for="(item, index) in searchResults.filter(item => item.genre.includes('Light Novel')).slice(0,4)" :key="index" :xs="12" :md="3" class="justify-center align-center pt-1 pb-1">
-                <BookHome :Bookitems="[item]" />
+                <BookHome @click="clickSach" :Bookitems="[item]" />
               </v-col>
             </v-row>
 <!--============================================================header thể loại 3============================================================-->
@@ -91,7 +91,7 @@
 <!--============================================================row sách thể loại 3============================================================-->
             <v-row>
               <v-col v-for="(item, index) in searchResults.filter(item => item.genre.includes('Adventure')).slice(0,4)" :key="index" :xs="12" :md="3" class="justify-center align-center pt-1 pb-1">
-                <BookHome :Bookitems="[item]" />
+                <BookHome @click="clickSach" :Bookitems="[item]" />
               </v-col>
             </v-row>
 <!--============================================================row sách all============================================================-->
@@ -102,7 +102,7 @@
             </v-row>
             <v-row>
               <v-col v-for="(item, index) in searchResults" :key="index" :xs="12" :md="3" class="justify-center align-center pt-1 pb-1">
-                <BookHome :Bookitems="[item]" />
+                <BookHome @click="clickSach" :Bookitems="[item]" />
               </v-col>
             </v-row>
           </v-form>
@@ -116,9 +116,7 @@
 import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import AdminComponent from "@/components/UIAdminComponent.vue";
-import Button from "@/components/ButtonComponent.vue";
 import ComboBox from "@/components/ComboBoxComponent.vue";
-import InforBook from "@/components/InformationBook1.vue";
 import BookHome from "@/components/InformationBook_Home.vue";
 import axios from "axios";
 
@@ -209,7 +207,7 @@ const formData = ref({
 
 // Các phương thức chuyển trang
 const goToSearchBook = () => {
-  router.push("/searchbook");
+  router.push("/search");
 };
 const goToBorrowedBooksUser = () => {
   router.push("/borrowedBooksUsers");
@@ -218,11 +216,23 @@ const goToAddBook = () => {
   router.push("/addbook");
 };
 const goToEditBook = () => {
-  router.push("/editbook");
+  router.push("/managebook");
 };
-
-// Các items cho AdminComponent
-const itemsA = [
+const goToHome = () => {
+  router.push("/home");
+};
+let itemsA: Array<{ title: string; icon: string; value: string; method: Function }> = [];
+if (
+  localStorage.getItem("role") == "ADMIN" ||
+  localStorage.getItem("access_token") == null
+) {
+ itemsA = [
+  {
+    title: "Trang chủ",
+    icon: "mdi-radiobox-blank",
+    value: "home",
+    method: goToHome,
+  },
   {
     title: "Tìm kiếm",
     icon: "mdi-magnify",
@@ -248,7 +258,27 @@ const itemsA = [
     method: goToEditBook,
   },
 ];
-
+}else {itemsA = [
+  {
+    title: "Trang chủ",
+    icon: "mdi-radiobox-blank",
+    value: "home",
+    method: goToHome,
+  },
+  {
+    title: "Tìm kiếm",
+    icon: "mdi-magnify",
+    value: "search",
+    method: goToSearchBook,
+  },
+  {
+    title: "Danh sách mượn",
+    icon: "mdi-bookmark",
+    value:"",
+    method: goToBorrowedBooksUser,
+  },
+];
+}
 const handleSubmit = async () => {
   try {
     console.log("Form submitted:", formData.value); // Kiểm tra form data
@@ -429,7 +459,26 @@ const clickSach=(item:Book)=>{
   }
   router.push("/infor")
 };
+function isTokenExpired(token: string): boolean {
+  const payloadBase64 = token.split(".")[1]; // Phần payload của JWT
+  const payload = JSON.parse(atob(payloadBase64));
+  const exp = payload.exp * 1000; // Chuyển giây thành mili giây
+  return Date.now() > exp; // So sánh với thời gian hiện tại
+}
 
+function checkTokenValidity() {
+  const token = localStorage.getItem("access_token");
+  if (token && isTokenExpired(token)) {
+    localStorage.removeItem("access_token"); // Xóa token
+    localStorage.removeItem("role"); // Xóa role nếu cần
+    alert("Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại.");
+    // Redirect người dùng đến trang đăng nhập (nếu cần)
+    window.location.href = "/login"; // Điều hướng đến trang đăng nhập
+  }
+}
+
+// Gọi hàm kiểm tra mỗi khi ứng dụng được khởi tạo
+checkTokenValidity();
 onMounted(() => {
       handleSubmit(); // Gọi handleSubmit khi trang được tải
     });

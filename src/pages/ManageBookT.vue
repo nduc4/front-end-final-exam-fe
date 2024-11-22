@@ -100,13 +100,7 @@ interface Book {
 // Dữ liệu tìm kiếm
 const searchResults = ref<Book[]>([]);
 
-// Headers cho bảng
-const resultHeaders = [
-  { text: "Tên sách", value: "title" },
-  { text: "Tác giả", value: "author" },
-  { text: "Năm xuất bản", value: "published_year" },
-  { text: "Thể loại", value: "genre" },
-];
+
 
 // Dữ liệu form
 const formData = ref({
@@ -120,6 +114,12 @@ const categoryOptions = ["FANTASY", "LIGHT NOVEL"];
 const inputLabels = ["Tên sách", "Tác giả", "Thể loại"];
 const repeatCount = inputLabels.length;
 const itemsA = [
+  {
+    title: "Trang chủ",
+    icon: "mdi-radiobox-blank",
+    value: "home",
+    method: () => router.push("/home"),
+  },
   {
     title: "Tìm kiếm",
     icon: "mdi-magnify",

@@ -104,20 +104,45 @@ const categoryOptions = ["Fantasty", "Tiểu thuyết", "Tài liệu"];
 // Các label cho input
 const inputLabels = ["Tên sách", "Tác giả", "Thể loại"];
 const repeatCount = inputLabels.length;
-
-// Các phương thức chuyển trang
-const goToAddBook = () => {
-  router.push("/addbook");
-};
-const goToManageBook = () => {
-  router.push("/managebook");
-};
 const goToSearchBook = () => {
   router.push("/search");
 };
-
-// Các items cho AdminComponent
-const itemsA = [
+const goToBorrowedBooksUser = () => {
+  router.push("/borrowedBooksUsers");
+}
+const goToAddBook = () => {
+  router.push("/addbook");
+};
+const goToEditBook = () => {
+  router.push("/managebook");
+};
+const goToHome = () => {
+  router.push("/home");
+};
+let itemsA: Array<{ title: string; icon: string; value: string; method: Function }> = [];
+if (
+  localStorage.getItem("role") == "ADMIN" ||
+  localStorage.getItem("access_token") == null
+) {
+ itemsA = [
+  {
+    title: "Trang chủ",
+    icon: "mdi-radiobox-blank",
+    value: "home",
+    method: goToHome,
+  },
+  {
+    title: "Tìm kiếm",
+    icon: "mdi-magnify",
+    value: "search",
+    method: goToSearchBook,
+  },
+  {
+    title: "Danh sách mượn",
+    icon: "mdi-bookmark",
+    value:"",
+    method: goToBorrowedBooksUser,
+  },
   {
     title: "Thêm sách",
     icon: "mdi-plus",
@@ -128,7 +153,15 @@ const itemsA = [
     title: "Chỉnh sửa",
     icon: "mdi-pencil",
     value: "edit",
-    method: goToManageBook,
+    method: goToEditBook,
+  },
+];
+}else {itemsA = [
+  {
+    title: "Trang chủ",
+    icon: "mdi-radiobox-blank",
+    value: "home",
+    method: goToHome,
   },
   {
     title: "Tìm kiếm",
@@ -136,7 +169,14 @@ const itemsA = [
     value: "search",
     method: goToSearchBook,
   },
+  {
+    title: "Danh sách mượn",
+    icon: "mdi-bookmark",
+    value:"",
+    method: goToBorrowedBooksUser,
+  },
 ];
+}
 
 const ipAddress = import.meta.env.VITE_IP_ADDRESS;
 const port = import.meta.env.VITE_PORT;
