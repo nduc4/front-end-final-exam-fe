@@ -23,3 +23,10 @@ export default {
   },
 };
 </script>
+<style scoped>
+button {
+  border-radius: 4px;
+  color: green;
+  background: rgb(36, 199, 36);
+}
+</style>
