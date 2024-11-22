@@ -25,7 +25,9 @@
         <v-list>
           <v-list-item>
             <v-list-item-avatar>
-              <v-img src="..\assets\logo.png"></v-img>
+              <v-img
+                src="..\assets\pngtree-book-logo-template-design-study-shape-vector-png-image_43696810.jpg"
+              ></v-img>
             </v-list-item-avatar>
           </v-list-item>
         </v-list>

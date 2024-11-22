@@ -21,7 +21,11 @@ const router = createRouter({
     },
     {
       path: "/",
-      redirect: "/login",
+      redirect: "/home",
+    },
+    {
+      path: "",
+      redirect: "/home",
     },
     {
       path: "/addbook",
