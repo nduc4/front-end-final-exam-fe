@@ -30,7 +30,7 @@
 
             <!-- Thể loại, Phân loại và Năm xuất bản -->
             <v-row>
-              <v-col cols="12" md="4" class="pt-1 pb-1">
+              <v-col cols="12" md="6" class="pt-1 pb-1">
                 <ComboBox
                   :label="inputLabels[2]"
                   v-model="formData.category"
@@ -59,7 +59,7 @@
                 }"
                 class="mt-8 mt-sm-0"
               >
-                <Button background="green" color="white" text="Xác nhận" />
+              <Button background="green" color="white" text="Xác nhận" @click="handleSubmit" />
                 <AlertComponent
                   v-show="alertVisible"
                   text="This is a success message!"
@@ -104,45 +104,20 @@ const categoryOptions = ["Fantasty", "Tiểu thuyết", "Tài liệu"];
 // Các label cho input
 const inputLabels = ["Tên sách", "Tác giả", "Thể loại"];
 const repeatCount = inputLabels.length;
-const goToSearchBook = () => {
-  router.push("/search");
-};
-const goToBorrowedBooksUser = () => {
-  router.push("/borrowedBooksUsers");
-}
+
+// Các phương thức chuyển trang
 const goToAddBook = () => {
   router.push("/addbook");
 };
-const goToEditBook = () => {
+const goToManageBook = () => {
   router.push("/managebook");
 };
-const goToHome = () => {
-  router.push("/home");
+const goToSearchBook = () => {
+  router.push("/search");
 };
-let itemsA: Array<{ title: string; icon: string; value: string; method: Function }> = [];
-if (
-  localStorage.getItem("role") == "ADMIN" ||
-  localStorage.getItem("access_token") == null
-) {
- itemsA = [
-  {
-    title: "Trang chủ",
-    icon: "mdi-radiobox-blank",
-    value: "home",
-    method: goToHome,
-  },
-  {
-    title: "Tìm kiếm",
-    icon: "mdi-magnify",
-    value: "search",
-    method: goToSearchBook,
-  },
-  {
-    title: "Danh sách mượn",
-    icon: "mdi-bookmark",
-    value:"",
-    method: goToBorrowedBooksUser,
-  },
+
+// Các items cho AdminComponent
+const itemsA = [
   {
     title: "Thêm sách",
     icon: "mdi-plus",
@@ -153,15 +128,7 @@ if (
     title: "Chỉnh sửa",
     icon: "mdi-pencil",
     value: "edit",
-    method: goToEditBook,
-  },
-];
-}else {itemsA = [
-  {
-    title: "Trang chủ",
-    icon: "mdi-radiobox-blank",
-    value: "home",
-    method: goToHome,
+    method: goToManageBook,
   },
   {
     title: "Tìm kiếm",
@@ -169,14 +136,7 @@ if (
     value: "search",
     method: goToSearchBook,
   },
-  {
-    title: "Danh sách mượn",
-    icon: "mdi-bookmark",
-    value:"",
-    method: goToBorrowedBooksUser,
-  },
 ];
-}
 
 const ipAddress = import.meta.env.VITE_IP_ADDRESS;
 const port = import.meta.env.VITE_PORT;
@@ -240,20 +200,20 @@ const handleSubmit = () => {
       console.log(`StatusCode: ${response.status}`); // Hiển thị mã trạng thái
       console.log("Cập nhật thành công:", response.data);
 
-      // Tự động tắt thông báo sau 1,5 giây
-      setTimeout(() => {
-        alertVisible.value = false;
-      }, 1500);
-    })
-    .catch((error) => {
-      console.error("Lỗi khi cập nhật:", error);
+// Tự động tắt thông báo sau 1,5 giây
+setTimeout(() => {
+  alertVisible.value = false;
+}, 1500);
+})
+.catch((error) => {
+console.error("Lỗi khi cập nhật:", error);
 
-      // Xử lý lỗi và hiển thị thông báo
-      alert(
-        `Cập nhật không thành công. Kiểm tra lại thông tin. ${
-          error.response ? `StatusCode: ${error.response.status}` : ""
-        }`
-      );
-    });
+// Xử lý lỗi và hiển thị thông báo
+alert(
+  `Cập nhật không thành công. Kiểm tra lại thông tin. ${
+    error.response ? `StatusCode: ${error.response.status}` : ""
+  }`
+);
+});
 };
 </script>
